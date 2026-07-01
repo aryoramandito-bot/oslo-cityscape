@@ -1,0 +1,149 @@
+<!doctype html>
+<html style="height: 100%; margin: 0;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OSLO - Main Page App Mockup</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { margin: 0; height: 100%; display: flex; flex-direction: column; overflow: hidden; font-family: 'Inter', sans-serif; }
+    </style>
+  </head>
+  <body>
+    <div class="w-full h-full bg-[#f9f8f6] flex items-center justify-center font-sans text-gray-200">
+      <!-- Mobile PWA Frame -->
+      <div class="w-[375px] h-[700px] bg-[#0c0c0c] border-[6px] border-[#222] rounded-[48px] shadow-2xl overflow-hidden flex flex-col relative">
+        
+        <!-- Status Bar Mock -->
+        <div class="h-10 w-full flex justify-between items-center px-8 text-[10px] font-bold tracking-widest text-gray-500 uppercase">
+          <span>OSLO System 1.1</span>
+          <div class="flex gap-2 items-center">
+            <div class="w-2 h-2 rounded-full bg-[#ff9898] shadow-[0_0_8px_#ff9898]"></div>
+            <span>Verified</span>
+          </div>
+        </div>
+
+        <!-- Header Section -->
+        <header class="px-6 py-4">
+          <div class="flex justify-between items-end mb-6">
+            <div>
+              <h1 class="text-3xl font-light tracking-tighter text-white">OSLO</h1>
+              <p class="text-[10px] uppercase tracking-[0.2em] text-[#ff9898] font-semibold">Guest Portal</p>
+            </div>
+            <div class="w-10 h-10 rounded-full border border-gray-200/80 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-xs">
+              AD
+            </div>
+          </div>
+
+          <!-- Gating Status Indicator -->
+          <div class="bg-white rounded-xl p-3 border border-gray-200/50 flex items-center gap-3">
+            <div class="flex -space-x-2">
+              <div class="w-6 h-6 rounded-full bg-[#ff9898]/20 border border-emerald-500/40 flex items-center justify-center">
+                <svg class="w-3 h-3 text-[#ff9898]" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              </div>
+              <div class="w-6 h-6 rounded-full bg-[#ff9898]/20 border border-emerald-500/40 flex items-center justify-center">
+                <svg class="w-3 h-3 text-[#ff9898]" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              </div>
+              <div class="w-6 h-6 rounded-full bg-[#ff9898]/20 border border-emerald-500/40 flex items-center justify-center">
+                <svg class="w-3 h-3 text-[#ff9898]" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[11px] font-bold text-white leading-none">Triple-Check Pass</span>
+              <span class="text-[9px] text-gray-500">Access Valid: Oct 12, 2025</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Main Grid Content -->
+        <main class="flex-1 px-6 overflow-y-auto grid grid-cols-2 gap-3 pb-8">
+          
+          <!-- Module A: Wayfinding -->
+          <div class="col-span-2 bg-white rounded-2xl p-4 border border-gray-200/50 flex flex-col justify-between">
+            <div>
+              <span class="text-[10px] text-gray-500 uppercase tracking-widest block mb-1">Current Location</span>
+              <h3 class="text-lg font-medium text-white leading-tight">Nordic Pavilion <span class="text-gray-500 font-light text-sm">B2</span></h3>
+            </div>
+            <div class="h-16 w-full bg-[#f9f8f6] rounded-lg mt-3 relative overflow-hidden border border-gray-200/50">
+               <div class="absolute inset-0 opacity-30 bg-[radial-gradient(#333_1px,transparent_1px)] bg-[size:10px_10px]"></div>
+               <div class="absolute top-1/2 left-1/3 w-2 h-2 bg-[#ff9898] rounded-full shadow-[0_0_8px_#3b82f6]"></div>
+            </div>
+            <button class="mt-3 w-full py-2 bg-white text-black text-[11px] font-bold rounded-lg uppercase tracking-wider flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              Find My Way
+            </button>
+          </div>
+
+          <!-- Module B: Events -->
+          <div class="bg-white rounded-2xl p-4 border border-gray-200/50 flex flex-col">
+            <span class="text-[9px] text-[#ff9898] font-bold uppercase tracking-wider">Live Now</span>
+            <h4 class="text-xs font-bold text-white mt-1">Aurora Sync Show</h4>
+            <div class="flex-1"></div>
+            <div class="flex items-center gap-1.5 mt-2 bg-[#ff9898]/10 border border-purple-500/20 p-2 rounded-lg">
+              <div class="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+              <span class="text-[8px] text-purple-200 uppercase font-bold tracking-wider">NFT Drop</span>
+            </div>
+          </div>
+
+          <!-- Module C: Voyage Vault -->
+          <div class="bg-white rounded-2xl p-4 border border-gray-200/50 flex flex-col">
+            <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Your Collection</span>
+            <div class="flex gap-1 mt-2">
+              <div class="w-8 h-8 rounded-lg bg-white border border-gray-200/50 relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=100&auto=format&fit=crop" class="w-full h-full object-cover opacity-80" />
+              </div>
+              <div class="w-8 h-8 rounded-lg bg-white border border-gray-200/50 relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=100&auto=format&fit=crop" class="w-full h-full object-cover opacity-80" />
+              </div>
+              <div class="w-8 h-8 rounded-lg bg-white border border-gray-200/50 flex items-center justify-center text-[10px] text-gray-400 font-mono">+3</div>
+            </div>
+            <div class="flex-1"></div>
+            <span class="text-[10px] text-white underline underline-offset-4 mt-2">View Vault</span>
+          </div>
+
+          <!-- Module D: Perk Hub -->
+          <div class="col-span-2 bg-gradient-to-r from-[#222] to-[#ffffff] rounded-2xl p-4 border border-gray-200/50 flex items-center justify-between mt-1">
+            <div>
+              <span class="text-[9px] text-gray-500 font-bold uppercase block mb-1">Secure WiFi</span>
+              <h4 class="text-sm font-bold text-white">OSLO_Guest_5G</h4>
+            </div>
+            <button class="px-4 py-2 bg-gray-800 text-[10px] font-bold rounded-lg border border-gray-200/80 uppercase tracking-wider flex items-center gap-1.5">
+              Get Key
+            </button>
+          </div>
+
+        </main>
+
+        <!-- Navigation -->
+        <nav class="h-20 w-full border-t border-gray-200/50 bg-[#0e0e0e] flex justify-around items-center px-4 shadow-[0_-4px_24px_rgba(0,0,0,0.5)] pb-safe">
+          <div class="flex flex-col items-center gap-1 opacity-100 scale-110 relative justify-center w-16 h-14">
+            <i data-lucide="map" class="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"></i>
+            <span class="text-[9px] font-bold text-white uppercase tracking-wider">Map</span>
+            <div class="absolute -bottom-3 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_#ffffff]"></div>
+          </div>
+          <div class="flex flex-col items-center gap-1 opacity-40 relative justify-center w-16 h-14">
+            <i data-lucide="calendar" class="w-5 h-5 text-white"></i>
+            <span class="text-[9px] font-bold text-white uppercase tracking-wider">Events</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 opacity-40 relative justify-center w-16 h-14">
+            <i data-lucide="wallet" class="w-5 h-5 text-white"></i>
+            <span class="text-[9px] font-bold text-white uppercase tracking-wider">Vault</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 opacity-40 relative justify-center w-16 h-14">
+            <i data-lucide="ticket" class="w-5 h-5 text-white"></i>
+            <span class="text-[9px] font-bold text-white uppercase tracking-wider">Perks</span>
+          </div>
+        </nav>
+
+        <!-- Bottom Notch Mock -->
+        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-white/10 rounded-full"></div>
+      </div>
+
+    </div>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
