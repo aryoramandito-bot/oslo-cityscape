@@ -861,12 +861,56 @@
               <div class="w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold text-xs font-mono">BD</div>
               <div class="text-left">
                 <span class="text-[11px] font-bold text-gray-800 block">Bandung Chapter</span>
-                <span class="text-[8.5px] text-gray-400 font-mono">4 Curated Sites • Next Node</span>
+                <span class="text-[8.5px] text-gray-400 font-mono">36 Curated Sites • Next Node</span>
               </div>
             </div>
             <i data-lucide="check" class="w-4 h-4 text-transparent" id="sheet-check-bandung"></i>
           </div>
         </div>
+      </div>
+    </div>
+
+    
+    <!-- BANDUNG CITY INTRO WELCOME SCREEN -->
+    <div id="bandung-intro-overlay" class="absolute inset-0 z-[9000] hidden flex-col items-center justify-center"
+      style="background: linear-gradient(135deg, rgba(251,191,36,0.12) 0%, rgba(255,255,255,0.97) 40%, rgba(245,158,11,0.08) 100%); backdrop-filter: blur(20px);">
+      <div class="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10" style="background: radial-gradient(circle, #f59e0b, transparent); transform: translate(30%, -30%);"></div>
+      <div class="absolute bottom-0 left-0 w-48 h-48 rounded-full opacity-10" style="background: radial-gradient(circle, #d97706, transparent); transform: translate(-30%, 30%);"></div>
+      <div class="relative z-10 flex flex-col items-center text-center px-8 max-w-sm mx-auto">
+        <div class="w-16 h-16 rounded-2xl bg-amber-500 flex items-center justify-center shadow-xl mb-5">
+          <span class="text-white font-extrabold text-2xl font-outfit">BD</span>
+        </div>
+        <span class="text-[10px] font-bold text-amber-500 uppercase tracking-[0.2em] font-mono mb-2">City Chapter · West Java</span>
+        <h1 class="text-3xl font-extrabold text-gray-900 font-outfit leading-tight mb-1">Bandung</h1>
+        <p class="text-sm text-amber-600 font-semibold mb-5">Paris Van Java · Kota Kembang</p>
+        <p class="text-xs text-gray-500 leading-relaxed mb-6">Discover West Java's cultural capital — Dutch colonial elegance, Sundanese artistry, active volcanoes, world-class pastries, and Indonesia's most beloved street foods.</p>
+        <div class="flex flex-wrap gap-2 justify-center mb-8">
+          <span class="px-3 py-1 bg-amber-50 border border-amber-200/60 rounded-full text-[10px] font-semibold text-amber-700">🏛️ Colonial Heritage</span>
+          <span class="px-3 py-1 bg-amber-50 border border-amber-200/60 rounded-full text-[10px] font-semibold text-amber-700">🌋 Volcanic Wonders</span>
+          <span class="px-3 py-1 bg-amber-50 border border-amber-200/60 rounded-full text-[10px] font-semibold text-amber-700">🎵 Angklung Music</span>
+          <span class="px-3 py-1 bg-amber-50 border border-amber-200/60 rounded-full text-[10px] font-semibold text-amber-700">🥘 Sundanese Cuisine</span>
+          <span class="px-3 py-1 bg-amber-50 border border-amber-200/60 rounded-full text-[10px] font-semibold text-amber-700">☕ Heritage Coffee</span>
+        </div>
+        <div class="flex gap-6 mb-8">
+          <div class="text-center">
+            <div class="text-2xl font-extrabold text-amber-500 font-outfit">17</div>
+            <div class="text-[10px] text-gray-400 font-medium">Attractions</div>
+          </div>
+          <div class="w-px bg-gray-200"></div>
+          <div class="text-center">
+            <div class="text-2xl font-extrabold text-amber-500 font-outfit">19</div>
+            <div class="text-[10px] text-gray-400 font-medium">Culinary</div>
+          </div>
+          <div class="w-px bg-gray-200"></div>
+          <div class="text-center">
+            <div class="text-2xl font-extrabold text-amber-500 font-outfit">36</div>
+            <div class="text-[10px] text-gray-400 font-medium">Total Sites</div>
+          </div>
+        </div>
+        <button onclick="closeBandungIntro()" class="w-full py-4 rounded-2xl bg-amber-500 text-white font-bold text-sm shadow-lg hover:bg-amber-600 transition-colors font-outfit">
+          Explore Bandung Chapter →
+        </button>
+        <button onclick="closeBandungIntro()" class="mt-3 text-[10px] text-gray-400 hover:text-gray-600">Skip Introduction</button>
       </div>
     </div>
 
@@ -1484,61 +1528,511 @@
       // 1. DATA MOCK STORES
       // 1b. BANDUNG CHAPTER MOCK STORE
       const mockBandungLandmarks = [
+        // === CULTURAL ATTRACTIONS ===
         {
           id: 'b1',
           name: 'Gedung Sate',
           category: 'attraction',
-          rating: '4.9',
-          image: 'https://images.unsplash.com/photo-1590559899731-a382839e5549?auto=format&fit=crop&w=400&q=80',
-          description: 'Iconic neo-classical government palace of West Java, featuring its signature skewers pinnacle ornament.',
-          history: 'Designed by Dutch architect J. Gerber, construction was completed in 1920. It combines European architecture with native Indonesian roof styles. Currently serves as the office of the West Java Governor.',
-          hours: '08:00 AM - 04:00 PM (Mon - Fri, Closed Sat-Sun)',
+          rating: '4.7',
+          image: '/images/bandung/gedungsate.jpg',
+          description: 'Iconic 1920 neo-classical government palace of West Java, crowned by a distinctive golden skewers pinnacle.',
+          history: 'Designed by Dutch architect J. Gerber, the building blends European Rationalism with Sundanese roof styles. The six golden "sate" orbs atop its tower represent the construction cost of 6 million guilders. Now serves as the official office of the Governor of West Java.',
+          hours: '08:00 AM - 04:00 PM (Mon - Fri; Museum Tue - Sat 09:00 - 15:00)',
           lat: -6.9025,
           lng: 107.6186,
           placeId: 'ChIJz2xH2b2a1yMRLxVw8tI3N3E',
-          tags: ['heritage', 'recreation']
+          tags: ['heritage', 'architecture', 'colonial']
         },
         {
           id: 'b2',
+          name: 'Gedung Merdeka (Asia-Africa Museum)',
+          category: 'attraction',
+          rating: '4.6',
+          image: '/images/bandung/gedungmerdeka.jpg',
+          description: 'Historic 1895 colonial building that hosted the landmark 1955 Asia-Africa Conference, now a world-class museum.',
+          history: 'Built as the Concordia Society Club for Dutch colonists in 1895, it became globally famous as the site of the 1955 Bandung Conference — bringing together 29 Asian and African nations in a landmark moment of South-South solidarity during the Cold War.',
+          hours: '08:00 AM - 04:00 PM (Tue - Sun, Closed Mon)',
+          lat: -6.9218,
+          lng: 107.6070,
+          placeId: 'ChIJEe8L476a1yMRW5pzKrCOHLk',
+          tags: ['heritage', 'museum', 'history', 'colonial']
+        },
+        {
+          id: 'b3',
+          name: 'Jalan Braga Heritage Strip',
+          category: 'attraction',
+          rating: '4.5',
+          image: '/images/bandung/braga.jpg',
+          description: "Bandung's most romantic colonial street lined with Art Deco facades, galleries, jazz bars, and boutiques.",
+          history: 'Known as the "Paris of Java" heart, Braga was the premier social promenade of colonial Bandung in the early 20th century. The beautifully preserved Art Deco shophouses now house galleries, boutiques, and the iconic Braga Permai restaurant (est. 1923).',
+          hours: 'Open 24 Hours (Shops/Cafes: 09:00 AM - 11:00 PM)',
+          lat: -6.9154,
+          lng: 107.6082,
+          placeId: 'ChIJkYeM0b6a1yMRCiGt3TDVZRE',
+          tags: ['heritage', 'architecture', 'art-deco', 'shopping']
+        },
+        {
+          id: 'b4',
+          name: 'Museum Geologi Bandung',
+          category: 'attraction',
+          rating: '4.5',
+          image: '/images/bandung/museumgeologi.jpg',
+          description: "Indonesia's premier geological museum from 1929 housing Java Man fossils, dinosaur specimens, and rare minerals.",
+          history: 'Established in 1929 during the Dutch colonial era, the museum contains over 250,000 geological specimens including replicas of Java Man (Homo erectus), dinosaur skeletons, and rare minerals. Its stunning Art Deco building is itself a colonial landmark.',
+          hours: '08:00 AM - 04:00 PM (Mon - Thu); 08:00 AM - 01:00 PM (Fri); Sat - Sun 08:00 AM - 02:00 PM',
+          lat: -6.9078,
+          lng: 107.6197,
+          placeId: 'ChIJ5aeS8b2a1yMRs87AJtyY8iQ',
+          tags: ['museum', 'science', 'heritage', 'colonial']
+        },
+        {
+          id: 'b5',
+          name: 'Saung Angklung Udjo',
+          category: 'attraction',
+          rating: '4.7',
+          image: '/images/bandung/saungangklung.jpg',
+          description: 'UNESCO-recognized living cultural center dedicated to Angklung bamboo music and Sundanese performing arts.',
+          history: 'Founded in 1966 by master musician Udjo Ngalagena, this beloved cultural village preserves Sundanese arts worldwide. Visitors join immersive angklung performances, play in an orchestra, and watch wayang golek puppet shows and traditional Sundanese dances.',
+          hours: '08:30 AM - 05:00 PM (Daily; Main performance at 03:30 PM)',
+          lat: -6.8947,
+          lng: 107.6559,
+          placeId: 'ChIJz0Lk6d2a1yMRxYvHpCKbW0Q',
+          tags: ['culture', 'heritage', 'music', 'UNESCO', 'performance']
+        },
+        {
+          id: 'b6',
           name: 'Kawah Putih (White Crater)',
           category: 'attraction',
-          rating: '4.8',
-          image: 'https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=400&q=80',
-          description: 'Stunning volcanic crater lake in Ciwidey, featuring highly acidic and surreal pale-green waters.',
-          history: 'First documented by botanist Dr. Franz Wilhelm Junghuhn in 1837, who explored the sulfurous lake. The white mist and sulfur smell create an otherworldly atmosphere.',
+          rating: '4.6',
+          image: '/images/bandung/kawahputih.jpg',
+          description: 'Otherworldly volcanic crater lake in Ciwidey highlands with milky-turquoise waters and sulfurous white mist.',
+          history: 'First documented by Dutch botanist Dr. Franz Wilhelm Junghuhn in 1837. Formed from eruptions of Mount Patuha at 2,430m altitude, the lake color shifts from turquoise to pale white depending on sulfur concentration. A day trip from Bandung (~50 km south) consistently rated West Java's most visually arresting natural wonder.',
           hours: '07:00 AM - 05:00 PM (Daily)',
           lat: -7.1662,
           lng: 107.4021,
           placeId: 'ChIJS3QWd1aa1yMRy4Tuxf1N_eQ',
-          tags: ['nature', 'recreation']
+          tags: ['nature', 'volcanic', 'day-trip']
         },
         {
-          id: 'b3',
-          name: 'Kartika Sari Bakery',
+          id: 'b7',
+          name: 'Gunung Tangkuban Perahu',
+          category: 'attraction',
+          rating: '4.4',
+          image: '/images/bandung/tangkubanperahu.jpg',
+          description: 'Accessible active volcano 30 km north of Bandung with drivable crater rim and the Sundanese legend of Sangkuriang.',
+          history: 'Named after an "overturned boat" from the legend of Sangkuriang, the volcano's flat-topped silhouette is visible from Bandung city. Visitors can drive to the Kawah Ratu crater rim and walk along its edge, watching active sulfuric steam vents at close range.',
+          hours: '07:00 AM - 05:00 PM (Daily, subject to volcanic activity)',
+          lat: -6.7700,
+          lng: 107.6092,
+          placeId: 'ChIJhyV0hgGb1yMRuJ0ZXYT0RQ8',
+          tags: ['nature', 'volcanic', 'day-trip', 'heritage']
+        },
+        {
+          id: 'b8',
+          name: 'Observatorium Bosscha',
+          category: 'attraction',
+          rating: '4.6',
+          image: '/images/bandung/bosscha.jpg',
+          description: 'Oldest astronomical observatory in Southeast Asia, built in 1923 with a historic Zeiss refractor telescope in cool Lembang.',
+          history: 'Built between 1923-1928 and financed by Karel Albert Rudolf Bosscha, its 60cm Zeiss double refractor was among the world's largest at the time. Now managed by ITB, it remains a working research facility. Saturday public tours require advance reservation via the official website.',
+          hours: '09:30 AM - 01:45 PM (Saturdays only, advance reservation required)',
+          lat: -6.8254,
+          lng: 107.6163,
+          placeId: 'ChIJR6I-sFKb1yMR5HkI-I4-VmU',
+          tags: ['science', 'heritage', 'astronomy', 'day-trip']
+        },
+        {
+          id: 'b9',
+          name: 'Villa Isola (Bumi Siliwangi — UPI)',
+          category: 'attraction',
+          rating: '4.4',
+          image: '/images/bandung/villaisola.jpg',
+          description: "Masterpiece 1933 Art Deco villa on Bandung's ridge with panoramic valley views, now part of UPI university campus.",
+          history: 'Designed by Dutch modernist architect Charles Prosper Wolff Schoemaker for newspaper magnate Dominique Willem Berretty in 1933. The circular streamlined design facing Bandung's volcanic skyline was revolutionary for its era. Now serves as the Universitas Pendidikan Indonesia's iconic campus centerpiece.',
+          hours: '07:00 AM - 05:00 PM (Mon - Fri, exterior freely viewable)',
+          lat: -6.8575,
+          lng: 107.5883,
+          placeId: 'ChIJ8eaQ1VKb1yMRBr0ZO8MPQMI',
+          tags: ['heritage', 'architecture', 'art-deco', 'colonial']
+        },
+        {
+          id: 'b10',
+          name: 'Institut Teknologi Bandung (ITB)',
+          category: 'attraction',
+          rating: '4.5',
+          image: '/images/bandung/alunalun.jpg',
+          description: "Indonesia's most prestigious technical university, with 1920 heritage Aula Barat buildings and the iconic Ganesha statue.",
+          history: 'Founded in 1920, ITB is Indonesia's MIT — producing the nation's foremost scientists, engineers, and artists. The landmark Aula Barat and Aula Timur on Jl. Ganesa blend Minangkabau vernacular architecture with modernism. The iconic Ganesha statue at the gate is one of Bandung's most recognizable symbols.',
+          hours: '07:00 AM - 08:00 PM (Campus accessible daily)',
+          lat: -6.8915,
+          lng: 107.6107,
+          placeId: 'ChIJkZ5L0b2a1yMR7HbSuKCt1Ig',
+          tags: ['heritage', 'education', 'architecture']
+        },
+        {
+          id: 'b11',
+          name: 'Alun-Alun Bandung',
+          category: 'attraction',
+          rating: '4.4',
+          image: '/images/bandung/alunalun.jpg',
+          description: "Bandung's iconic central square redesigned in 2014 with an indoor grass field, Masjid Raya, and City Hall surroundings.",
+          history: 'The traditional Sundanese alun-alun (central square) of Bandung, transformed in 2014 into a beloved public gathering place. The indoor grass field under a transparent canopy allows families to picnic sheltered from rain. Ringed by City Hall, the Grand Mosque, and Braga street.',
+          hours: 'Open 24 Hours',
+          lat: -6.9218,
+          lng: 107.6066,
+          placeId: 'ChIJDxrK4r6a1yMRSbq8T8T7WOA',
+          tags: ['landmark', 'recreation', 'family']
+        },
+        {
+          id: 'b12',
+          name: 'Dago Pakar & Tahura Djuanda',
+          category: 'attraction',
+          rating: '4.5',
+          image: '/images/bandung/dago.jpg',
+          description: '590-hectare protected highland forest with volcanic rock cliffs, colonial tunnels, waterfalls, and the famous Tebing Keraton sunrise.',
+          history: 'Taman Hutan Raya Ir. H. Djuanda encompasses 590 ha of highland forest just 8 km from Bandung center, containing Dutch-era and Japanese-era tunnels, natural waterfalls, and dramatic basalt cliffs. Tebing Keraton viewpoint at its peak offers Bandung's most celebrated sunrise over a forest canopy.',
+          hours: '07:00 AM - 05:00 PM (Daily); Tebing Keraton: 04:00 AM - 05:00 PM',
+          lat: -6.8701,
+          lng: 107.6198,
+          placeId: 'ChIJezKqvd2a1yMR0y_l4fhH94E',
+          tags: ['nature', 'hiking', 'forest', 'recreation']
+        },
+        {
+          id: 'b13',
+          name: 'Setu Patenggang',
+          category: 'attraction',
+          rating: '4.4',
+          image: '/images/bandung/setupatenggang.jpg',
+          description: 'Romantic volcanic crater lake in Ciwidey surrounded by tea plantations, linked to the Sundanese legend of eternal love.',
+          history: 'Legend holds that Ki Santang and Dewi Rengganis, two lovers separated for years, were reunited at this lake. The "Batu Cinta" (Love Rock) island is said to guarantee eternal love for couples who walk around it. The surrounding Malabar tea estate enhances the misty, otherworldly atmosphere.',
+          hours: '07:00 AM - 05:00 PM (Daily)',
+          lat: -7.1742,
+          lng: 107.3834,
+          placeId: 'ChIJ7xQZ3Faa1yMRF_0Ou3tWCVE',
+          tags: ['nature', 'romantic', 'day-trip', 'scenic']
+        },
+        {
+          id: 'b14',
+          name: 'Taman Lalu Lintas (Traffic Garden)',
+          category: 'attraction',
+          rating: '4.3',
+          image: '/images/bandung/tamanlalulintas.jpg',
+          description: 'Beloved 1956 vintage traffic education park and family garden under century-old trees in central Bandung.',
+          history: 'Named after national hero General Nasution's daughter Ade Irma Suryani, this park was established in 1956 to teach children traffic rules through play, with miniature roads, signals, and vintage rides. Surrounded by massive century-old trees, it is a nostalgic cornerstone of Bandung childhood memories.',
+          hours: '08:00 AM - 05:00 PM (Tue - Sun, Closed Mon)',
+          lat: -6.9108,
+          lng: 107.6162,
+          placeId: 'ChIJ7Ke8076a1yMR8cGsJu2YOOI',
+          tags: ['recreation', 'family', 'heritage', 'park']
+        },
+        {
+          id: 'b15',
+          name: 'Museum Sri Baduga',
+          category: 'attraction',
+          rating: '4.2',
+          image: '/images/bandung/museumSriBaduga.jpg',
+          description: 'West Java provincial museum with a superb collection of Sundanese textiles, wayang golek, gamelan, and prehistoric artifacts.',
+          history: 'Named after the legendary Sundanese king Sri Baduga Maharaja, the museum is housed in a 1974 building designed in traditional Sundanese style. Its collection spans prehistoric tools, traditional batik, wayang golek puppets, gamelan instruments, and ethnographic objects from across West Java.',
+          hours: '08:00 AM - 04:00 PM (Tue - Fri); 08:00 AM - 02:00 PM (Sat - Sun); Closed Mon',
+          lat: -6.9428,
+          lng: 107.5998,
+          placeId: 'ChIJsr_M876a1yMRCelkuAjmFxzM',
+          tags: ['museum', 'culture', 'sundanese', 'heritage']
+        },
+        {
+          id: 'b16',
+          name: 'Paris Van Java Mall',
+          category: 'attraction',
+          rating: '4.5',
+          image: '/images/bandung/parisluxury.jpg',
+          description: "Bandung's most celebrated lifestyle mall with Parisian-themed open-air architecture, lush gardens, and al fresco dining.",
+          history: 'Inspired by Bandung's colonial nickname "Paris of Java", this upscale lifestyle center was designed with Parisian architectural references and lush tropical gardens. Its distinctive open-air concept with European-style facades, al fresco restaurants, and premium boutiques make it the most stylish mall experience in West Java.',
+          hours: '10:00 AM - 10:00 PM (Daily)',
+          lat: -6.8905,
+          lng: 107.5855,
+          placeId: 'ChIJmXAR0b2a1yMR5J7NtCa_eQI',
+          tags: ['shopping', 'lifestyle', 'architecture']
+        },
+        {
+          id: 'b17',
+          name: 'Curug Cimahi (Pelangi Waterfall)',
+          category: 'attraction',
+          rating: '4.4',
+          image: '/images/bandung/curugcimahi.jpg',
+          description: 'Majestic 87-meter waterfall in highland forest, nicknamed "Rainbow Falls" for its spectacular mist rainbow in sunlight.',
+          history: 'One of the tallest accessible waterfalls in West Java at 87 meters. The descent of ~700 steps through lush highland forest rewards visitors with a thundering cascade surrounded by ferns and mossy rocks. In the morning sun, water mist creates vivid rainbows at the base — earning its "Pelangi" (Rainbow) nickname.',
+          hours: '07:00 AM - 05:00 PM (Daily)',
+          lat: -6.8210,
+          lng: 107.5805,
+          placeId: 'ChIJqr_N876a1yMRDelkuAjmFxzN',
+          tags: ['nature', 'waterfall', 'hiking', 'day-trip']
+        },
+        // === CULINARY SPOTS ===
+        {
+          id: 'b18',
+          name: 'Batagor Kingsley',
           category: 'culinary',
           rating: '4.7',
-          image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80',
-          description: "Bandung's most legendary bakery, universally celebrated for its signature baked banana cheese rolls.",
-          history: 'Started as a home bakery in the 1970s and grew to become the ultimate souvenir destination in West Java. Famous for maintaining secret recipes for pastries and cakes.',
+          image: '/images/bandung/batagor.jpg',
+          description: "Bandung's most iconic batagor since 1982 — crispy fried fish dumplings and tofu with aromatic peanut-lime sauce.",
+          history: 'Batagor (Bakso Tahu Goreng) is Bandung's most beloved street food export. Kingsley has been the gold standard since 1982 with its crispy fish-paste shells, perfectly seasoned filling, and thick house-made peanut sauce with kaffir lime. Also sold frozen as a cherished Bandung souvenir.',
+          hours: '09:00 AM - 09:00 PM (Daily)',
+          lat: -6.9143,
+          lng: 107.6105,
+          placeId: 'ChIJQ5N2476a1yMR4y5qN3J6uoU',
+          tags: ['street-food', 'sundanese', 'must-try', 'signature-dish']
+        },
+        {
+          id: 'b19',
+          name: 'Batagor & Cuanki Serayu',
+          category: 'culinary',
+          rating: '4.6',
+          image: '/images/bandung/batagor.jpg',
+          description: 'Legendary Bandung street food landmark since the 1970s — batagor and cuanki fish dumplings in savory broth.',
+          history: 'One of Bandung's oldest batagor spots, operating since the 1970s on Jl. Serayu. Famous for cuanki — a unique serving of batagor in warm aromatic fish broth. Lively atmosphere, generous portions, and consistent quality draw loyal queues of locals and tourists alike.',
+          hours: '07:00 AM - 08:00 PM (Daily, often sells out early)',
+          lat: -6.8960,
+          lng: 107.6230,
+          placeId: 'ChIJXfM2476a1yMRWe9cN5J6uoX',
+          tags: ['street-food', 'sundanese', 'must-try']
+        },
+        {
+          id: 'b20',
+          name: 'Siomay Haji Isan',
+          category: 'culinary',
+          rating: '4.5',
+          image: '/images/bandung/siomay.jpg',
+          description: 'Beloved Bandung siomay specialist using premium fresh mackerel, with a perfectly balanced peanut-lime-kecap sauce.',
+          history: 'A celebrated institution for decades. Siomay Bandung is a Sundanese adaptation of Chinese dim sum — steamed mackerel dumplings with tofu, cabbage, egg, and potato. Haji Isan's recipe uses fresh tenggiri (Spanish mackerel) for an incomparably rich flavor, unchanged for over 30 years.',
+          hours: '08:00 AM - 05:00 PM (Daily)',
+          lat: -6.9120,
+          lng: 107.6070,
+          placeId: 'ChIJXf_M476a1yMRWe9cN5J7uoY',
+          tags: ['street-food', 'sundanese', 'steamed']
+        },
+        {
+          id: 'b21',
+          name: 'Es Cendol Elizabeth',
+          category: 'culinary',
+          rating: '4.6',
+          image: '/images/bandung/cendol.jpg',
+          description: "Bandung's legendary cendol institution since 1972 — pandan green rice-flour jelly in coconut milk with gula aren syrup.",
+          history: 'Established in 1972, Es Cendol Elizabeth is the oldest and most revered cendol vendor in Bandung. Cendol ribbons of rice-flour jelly (colored with pandan) in freshly pressed coconut milk with unrefined gula aren (palm sugar) creates an unmatchably fragrant cold dessert. Often sold out by afternoon.',
+          hours: '07:00 AM - 05:00 PM (Daily, often sold out by afternoon)',
+          lat: -6.9211,
+          lng: 107.6060,
+          placeId: 'ChIJKr_Yh76a1yMRbkuAjmFRz2M',
+          tags: ['dessert', 'sundanese', 'must-try', 'drinks']
+        },
+        {
+          id: 'b22',
+          name: 'Mie Kocok Mang Dadeng',
+          category: 'culinary',
+          rating: '4.7',
+          image: '/images/bandung/miekocok.jpg',
+          description: "Bandung's signature Mie Kocok noodles — springy yellow noodles in deep beef-bone broth with kikil tendon, since 1970.",
+          history: 'Mie Kocok ("shaken noodles") gets its name from shaking noodles in a wire basket in boiling broth. Mang Dadeng has operated since 1970 and is the definitive address for this Bandung specialty — famous for its extraordinarily deep and collagen-rich bone-marrow broth with fresh bean sprouts and tender kikil.',
+          hours: '09:00 AM - 09:00 PM (Daily)',
+          lat: -6.9230,
+          lng: 107.6095,
+          placeId: 'ChIJIf_A476a1yMRMbkuAjmFRxzM',
+          tags: ['noodles', 'sundanese', 'soup', 'must-try']
+        },
+        {
+          id: 'b23',
+          name: 'Lotek Kalipah Apo',
+          category: 'culinary',
+          rating: '4.6',
+          image: '/images/bandung/lotek.jpg',
+          description: 'Legendary Sundanese vegetable salad warung since 1953, with freshly stone-ground peanut sauce and lalapan.',
+          history: 'Operating at the same address since 1953, Lotek Kalipah Apo is one of Bandung's oldest food institutions. Lotek features blanched kangkung, kacang panjang, tauge, and tempeh smothered in peanut sauce ground to order in a traditional stone cobek (mortar), seasoned with kencur, garlic, and palm sugar.',
+          hours: '09:00 AM - 04:00 PM (Daily, closes when sold out)',
+          lat: -6.9163,
+          lng: 107.6115,
+          placeId: 'ChIJQr_F476a1yMRFbkuAjmFRxzQ',
+          tags: ['vegetarian', 'sundanese', 'heritage', 'must-try']
+        },
+        {
+          id: 'b24',
+          name: 'Sate Maranggi Haji Yetty',
+          category: 'culinary',
+          rating: '4.5',
+          image: '/images/bandung/satemaranggi.jpg',
+          description: "West Java's finest sate Maranggi — marinated beef/goat satay charcoal grilled with complex spices, served with ketupat.",
+          history: 'Sate Maranggi originates from Purwakarta but Haji Yetty's Bandung outpost is widely regarded as the city's finest version. The beef or goat is marinated in a complex blend of coriander, galangal, and coconut water before slow charcoal grilling, yielding uniquely tender and aromatic satay.',
+          hours: '09:00 AM - 09:00 PM (Daily)',
+          lat: -6.8960,
+          lng: 107.6080,
+          placeId: 'ChIJsf_C476a1yMRZbkuAjmFRxzO',
+          tags: ['grilled', 'sundanese', 'must-try', 'meat']
+        },
+        {
+          id: 'b25',
+          name: 'Surabi Cihapit',
+          category: 'culinary',
+          rating: '4.6',
+          image: '/images/bandung/surabi.jpg',
+          description: "Bandung's most authentic traditional surabi — thick charcoal-cooked rice pancakes with palm-coconut sauce, breakfast only.",
+          history: 'Surabi is Bandung's most beloved breakfast — thick rice-flour pancakes cooked on traditional clay molds over coconut-shell charcoal, imparting an irreplaceable smoky fragrance. Surabi Cihapit maintains the traditional recipe: classic sweet kinca (palm sugar-coconut) or savory oncom topping. Sells out by noon.',
+          hours: '06:00 AM - 12:00 PM (Daily, sells out fast)',
+          lat: -6.9050,
+          lng: 107.6220,
+          placeId: 'ChIJMr_G476a1yMRAelkuAjmFxzR',
+          tags: ['pancakes', 'sundanese', 'breakfast', 'must-try']
+        },
+        {
+          id: 'b26',
+          name: 'Peuyeum & Colenak Bu Nani',
+          category: 'culinary',
+          rating: '4.3',
+          image: '/images/bandung/peuyeum.jpg',
+          description: "Bandung's iconic fermented cassava delicacy — and its grilled version 'colenak' with grated coconut and palm sugar.",
+          history: 'Peuyeum (fermented cassava/tape singkong) is one of Bandung's oldest culinary traditions, over 200 years old. The cassava is cooked, cooled, wrapped in banana leaves, and fermented with special yeast for 2-3 days, creating a uniquely sweet-tangy flavor. Colenak (grilled peuyeum with palm sugar coconut sauce) is the warm, indulgent variation.',
+          hours: '08:00 AM - 08:00 PM (Daily)',
+          lat: -6.9155,
+          lng: 107.6110,
+          placeId: 'ChIJGr_H476a1yMRGelkuAjmFxzS',
+          tags: ['sundanese', 'fermented', 'traditional', 'souvenir']
+        },
+        {
+          id: 'b27',
+          name: 'Tahu Sumedang Suka Ati',
+          category: 'culinary',
+          rating: '4.5',
+          image: '/images/bandung/basotahu.jpg',
+          description: 'Ultra-crispy hollow Sumedang-style fried tofu puffs — paper-thin skin, silken center — best eaten hot from the fryer.',
+          history: 'Tahu Sumedang, despite its neighboring city of origin, is a West Javanese culinary icon beloved in Bandung. Made with a special technique producing a paper-thin, impossibly crispy hollow exterior and silken tofu interior. Best eaten piping hot with fresh green chili sambal.',
           hours: '07:00 AM - 08:00 PM (Daily)',
+          lat: -6.9190,
+          lng: 107.6040,
+          placeId: 'ChIJWf_E476a1yMRHbkuAjmFRxzP',
+          tags: ['street-food', 'sundanese', 'tofu', 'snack']
+        },
+        {
+          id: 'b28',
+          name: 'Pisang Bolen Kartika Sari',
+          category: 'culinary',
+          rating: '4.6',
+          image: '/images/bandung/kartikasari.jpg',
+          description: "Bandung's most celebrated pastry brand since 1986 — legendary for the iconic banana-Edam cheese puff pastry bolen.",
+          history: 'Kartika Sari began as a humble home bakery in the 1970s before the revolutionary pisang bolen (banana-cheese puff pastry) made it Bandung's most famous souvenir food brand. The flaky golden pastry encasing ripe banana and melted Edam cheese has become inseparable from the Bandung experience.',
+          hours: '07:30 AM - 09:00 PM (Daily)',
           lat: -6.9065,
           lng: 107.6045,
           placeId: 'ChIJ81fK6dKa1yMRAxNu_vN2N3Q',
-          tags: ['local-treat', 'bakery']
+          tags: ['bakery', 'souvenir', 'pastry', 'must-buy']
         },
         {
-          id: 'b4',
-          name: 'Paskal Food Market',
+          id: 'b29',
+          name: 'Brownies Kukus Amanda',
+          category: 'culinary',
+          rating: '4.6',
+          image: '/images/bandung/brownies.jpg',
+          description: "Originator of Bandung's steamed brownie phenomenon since 2000 — moist, dense chocolate with an impossibly soft texture.",
+          history: 'Amanda established the brownies kukus (steamed brownies) category in Indonesia in 2000. Unlike baked brownies, Amanda's version is steamed in a mold, resulting in an extraordinarily moist, dense, fudgy texture. This innovation became one of Indonesia's most celebrated culinary inventions, and remains Bandung's essential souvenir.',
+          hours: '07:00 AM - 09:00 PM (Daily)',
+          lat: -6.9010,
+          lng: 107.5880,
+          placeId: 'ChIJqr_Q876a1yMRKblkuCjmFxzZ',
+          tags: ['bakery', 'souvenir', 'chocolate', 'must-buy']
+        },
+        {
+          id: 'b30',
+          name: 'Braga Permai Restaurant',
+          category: 'culinary',
+          rating: '4.3',
+          image: '/images/bandung/bragarestaurant.jpg',
+          description: "Bandung's oldest restaurant since 1923 — Art Deco colonial dining with Dutch-Indonesian classics, pastries, and ice cream.",
+          history: 'Established in 1923 as Maison Bogerijen during the Dutch colonial era, Braga Permai has operated for over 100 years in a beautifully preserved Art Deco shophouse on Braga Street. Its nostalgic menu of Dutch-influenced dishes, Indonesian staples, and famous house-made pastries and ice cream evoke colonial-era Bandung.',
+          hours: '06:30 AM - 11:30 PM (Daily)',
+          lat: -6.9157,
+          lng: 107.6075,
+          placeId: 'ChIJor_O476a1yMRIblkuCjmFxzX',
+          tags: ['heritage', 'colonial', 'restaurant', 'dessert']
+        },
+        {
+          id: 'b31',
+          name: 'Nasi Timbel Bu Neni',
+          category: 'culinary',
+          rating: '4.4',
+          image: '/images/bandung/nasitimbel.jpg',
+          description: 'Quintessential Sundanese nasi timbel set — banana-leaf-steamed rice with ayam goreng, lalapan, sambal, and sayur asem.',
+          history: 'Nasi Timbel is the definitive Sundanese meal: rice steamed inside a banana leaf cone imparting a unique earthy fragrance, served with fried chicken, crispy tempeh and tofu, fresh raw lalapan vegetables, and fiery sambal terasi. Bu Neni's warung is known for its generous, home-cooked warmth.',
+          hours: '09:00 AM - 09:00 PM (Daily)',
+          lat: -6.8942,
+          lng: 107.6148,
+          placeId: 'ChIJmr_M476a1yMRGelkuCjmFxzV',
+          tags: ['sundanese', 'rice', 'traditional', 'lunch']
+        },
+        {
+          id: 'b32',
+          name: 'Kopi Aroma Bandung',
           category: 'culinary',
           rating: '4.8',
-          image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=400&q=80',
-          description: "Bandung's largest open-air culinary market, hosting over 100 stalls of Sundanese and international delicacies.",
-          history: 'Centrally located near Bandung railway station, offering an immersive food journey with live music, water features, and family-friendly dining atmospheres.',
-          hours: '11:00 AM - 11:00 PM (Daily)',
+          image: '/images/bandung/kopiAroma.jpg',
+          description: 'Legendary 1930 coffee roastery on Banceuy Street aging Toraja Arabica for 8 years in Dutch cast-iron drum roasters.',
+          history: 'Kopi Aroma has roasted coffee in the same Banceuy Street building since 1930 using the original Dutch-era cast-iron drum roasters. Its Toraja Arabica beans are aged for 8 years before sale, creating an extraordinarily smooth, low-acid cup. One of Indonesia's most historically significant coffee shops.',
+          hours: '08:00 AM - 05:00 PM (Mon - Sat, Closed Sun)',
+          lat: -6.9190,
+          lng: 107.6060,
+          placeId: 'ChIJpr_L476a1yMRBelkuBjmFxzU',
+          tags: ['coffee', 'heritage', 'roastery', 'must-try']
+        },
+        {
+          id: 'b33',
+          name: 'Seblak Jeletot Kang Eko',
+          category: 'culinary',
+          rating: '4.5',
+          image: '/images/bandung/seblak.jpg',
+          description: "Bandung's viral street food phenomenon — chewy crackers stir-fried in kencur-chili broth with noodles, egg, and toppings.",
+          history: 'Seblak has become the defining street food of Bandung's Gen-Z culture — dry crackers soaked and stir-fried in a fiery broth of kencur (aromatic galangal), garlic, and bird's eye chilies. Kang Eko's "jeletot" (Sundanese: spicy) version has become the city's benchmark for this addictive dish.',
+          hours: '10:00 AM - 11:00 PM (Daily)',
           lat: -6.9155,
-          lng: 107.5955,
-          placeId: 'ChIJ_y7t7dKa1yMRBxNu_vN2N4Q',
-          tags: ['food', 'local-treat']
+          lng: 107.6058,
+          placeId: 'ChIJpr_P476a1yMRJblkuCjmFxzY',
+          tags: ['street-food', 'spicy', 'trending', 'snack']
+        },
+        {
+          id: 'b34',
+          name: 'Tahu Susu Lembang',
+          category: 'culinary',
+          rating: '4.6',
+          image: '/images/bandung/tahususu.jpg',
+          description: "Unique Highland specialty: silken fresh tofu made with Lembang cow's milk, served warm with gula merah and coconut.",
+          history: 'An innovation unique to Bandung's dairy-rich Lembang highlands: fresh silken tofu made by curdling local cow's milk instead of soy milk, producing an impossibly rich, custardy texture. Served warm with liquid palm sugar (gula merah) and grated coconut — the perfect highland snack after visiting Tangkuban Perahu or Bosscha.',
+          hours: '07:00 AM - 06:00 PM (Daily)',
+          lat: -6.8190,
+          lng: 107.6115,
+          placeId: 'ChIJqr_Q476a1yMRKblkuCjmFxzZ2',
+          tags: ['tofu', 'dairy', 'lembang', 'dessert', 'unique']
+        },
+        {
+          id: 'b35',
+          name: 'Mie Baso Akung',
+          category: 'culinary',
+          rating: '4.4',
+          image: '/images/bandung/bakso.jpg',
+          description: 'Beloved Bandung bakso institution with massive, perfectly-textured beef meatballs in a clean, deeply flavored bone broth.',
+          history: 'A much-loved Bandung bakso institution known for its perfectly-textured beef meatballs — firm, bouncy, and richly flavored — in a clear, deeply savored bone broth. Served with yellow noodles or glass noodles and bakwan (vegetable fritter). A quintessential Indonesian comfort food cherished by all ages.',
+          hours: '09:00 AM - 08:00 PM (Daily)',
+          lat: -6.9175,
+          lng: 107.6130,
+          placeId: 'ChIJsr_K476a1yMRAelkuBjmFxzT',
+          tags: ['soup', 'meatball', 'noodles', 'comfort-food']
+        },
+        {
+          id: 'b36',
+          name: 'Warung Nasi Ampera',
+          category: 'culinary',
+          rating: '4.3',
+          image: '/images/bandung/ampera.jpg',
+          description: 'Beloved West Javanese warung padang with an extensive self-service array of Sundanese-Minang rice and side dishes.',
+          history: 'A Bandung institution with branches citywide, Nasi Ampera is the definitive warung padang (Padang-style self-service rice) experience in West Java. Diners select from an enormous spread of curried and fried dishes in the traditional Minang style. Known for its sambal, rendang, and gulai at prices accessible to all.',
+          hours: '07:00 AM - 10:00 PM (Daily)',
+          lat: -6.9200,
+          lng: 107.6070,
+          placeId: 'ChIJnr_N476a1yMRHblkuCjmFxzW',
+          tags: ['sundanese', 'buffet', 'traditional', 'rice']
         }
       ];
 
@@ -3367,12 +3861,33 @@ Seats: ${state.selectedSeats.join(', ')}
       function selectCityFromSheet(city) {
         state.activeCity = city;
         closeChapterSelectorSheet();
-        applyActiveCityUpdates();
         
-        // Custom swap feedback
-        triggerFestiveConfetti();
-        alert(`Switched to the ${city.charAt(0).toUpperCase() + city.slice(1)} Chapter successfully.`);
+        if (city === 'bandung') {
+          openBandungIntro();
+        } else {
+          applyActiveCityUpdates();
+          triggerFestiveConfetti();
+        }
       }
+
+      function openBandungIntro() {
+        const overlay = document.getElementById('bandung-intro-overlay');
+        if (overlay) {
+          overlay.classList.remove('hidden');
+          overlay.classList.add('flex');
+        }
+      }
+
+      function closeBandungIntro() {
+        const overlay = document.getElementById('bandung-intro-overlay');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.classList.remove('flex');
+        }
+        applyActiveCityUpdates();
+        triggerFestiveConfetti();
+      }
+
 
       // ==================== CHECK-IN RADAR MAP ENGINE ====================
       const mapCoordinates = {
@@ -3385,10 +3900,42 @@ Seats: ${state.selectedSeats.join(', ')}
         '7': { x: 28, y: 62 },   // Sate Khas Senayan
         '31': { x: 25, y: 15 },  // Sunda Kelapa Harbour
         '32': { x: 78, y: 20 },
-        'b1': { x: 50, y: 35 },
-        'b2': { x: 30, y: 75 },
-        'b3': { x: 45, y: 48 },
-        'b4': { x: 65, y: 55 }   // Dufan
+        'b1':  { x: 50, y: 40 },   // Gedung Sate
+        'b2':  { x: 54, y: 58 },   // Gedung Merdeka
+        'b3':  { x: 52, y: 52 },   // Jalan Braga
+        'b4':  { x: 50, y: 43 },   // Museum Geologi
+        'b5':  { x: 68, y: 38 },   // Saung Angklung Udjo
+        'b6':  { x: 28, y: 80 },   // Kawah Putih
+        'b7':  { x: 45, y: 15 },   // Tangkuban Perahu
+        'b8':  { x: 47, y: 22 },   // Bosscha Observatory
+        'b9':  { x: 43, y: 28 },   // Villa Isola
+        'b10': { x: 50, y: 38 },   // ITB Campus
+        'b11': { x: 54, y: 56 },   // Alun-Alun Bandung
+        'b12': { x: 48, y: 25 },   // Dago Pakar & Tahura
+        'b13': { x: 25, y: 82 },   // Setu Patenggang
+        'b14': { x: 51, y: 48 },   // Taman Lalu Lintas
+        'b15': { x: 54, y: 65 },   // Museum Sri Baduga
+        'b16': { x: 44, y: 35 },   // Paris Van Java
+        'b17': { x: 38, y: 20 },   // Curug Cimahi
+        'b18': { x: 52, y: 50 },   // Batagor Kingsley
+        'b19': { x: 49, y: 42 },   // Batagor & Cuanki Serayu
+        'b20': { x: 54, y: 57 },   // Es Cendol Elizabeth
+        'b21': { x: 55, y: 58 },   // Mie Kocok Mang Dadeng
+        'b22': { x: 47, y: 37 },   // Sate Maranggi Haji Yetty
+        'b23': { x: 52, y: 53 },   // Lotek Kalipah Apo
+        'b24': { x: 48, y: 38 },   // Sate Maranggi
+        'b25': { x: 52, y: 47 },   // Surabi Cihapit
+        'b26': { x: 52, y: 51 },   // Peuyeum & Colenak
+        'b27': { x: 54, y: 56 },   // Tahu Sumedang
+        'b28': { x: 49, y: 44 },   // Kartika Sari
+        'b29': { x: 44, y: 34 },   // Brownies Amanda
+        'b30': { x: 52, y: 52 },   // Braga Permai Restaurant
+        'b31': { x: 48, y: 37 },   // Nasi Timbel Bu Neni
+        'b32': { x: 54, y: 57 },   // Kopi Aroma
+        'b33': { x: 53, y: 55 },   // Seblak Jeletot
+        'b34': { x: 46, y: 20 },   // Tahu Susu Lembang
+        'b35': { x: 53, y: 54 },   // Mie Baso Akung
+        'b36': { x: 54, y: 56 }    // Warung Nasi Ampera
       };
 
       function openRadarMap() {
