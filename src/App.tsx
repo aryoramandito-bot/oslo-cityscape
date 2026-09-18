@@ -11,7 +11,9 @@ import CitySwitcherModal from './components/modals/CitySwitcherModal';
 import CityIntroModal from './components/modals/CityIntroModal';
 import RadarMapModal from './components/modals/RadarMapModal';
 import LandmarkDetailModal from './components/modals/LandmarkDetailModal';
+import SiteStatementModal from './components/modals/SiteStatementModal';
 import OnboardingModal from './components/modals/OnboardingModal';
+import PointsToast from './components/common/PointsToast';
 
 function MainLayout() {
   const { activeTab } = useAppContext();
@@ -26,8 +28,6 @@ function MainLayout() {
 
   const renderActiveTab = () => {
     switch (activeTab) {
-      case 'portal':
-        return <PortalTab />;
       case 'explore':
         return <ExploreTab />;
       case 'events':
@@ -36,6 +36,8 @@ function MainLayout() {
         return <VaultTab />;
       case 'perks':
         return <PerksTab />;
+      case 'portal':
+        return <PortalTab />;
       default:
         return <ExploreTab />;
     }
@@ -43,6 +45,9 @@ function MainLayout() {
 
   return (
     <div className="mx-auto max-w-md min-h-screen bg-[#f9f8f6] text-gray-800 flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.06)] border-x border-gray-200/60 font-sans">
+      {/* Floating Animated Celebration Toast */}
+      <PointsToast />
+
       {/* Persistent Header */}
       <Header />
 
@@ -59,6 +64,7 @@ function MainLayout() {
       <CityIntroModal />
       <RadarMapModal />
       <LandmarkDetailModal />
+      <SiteStatementModal />
       {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
     </div>
   );

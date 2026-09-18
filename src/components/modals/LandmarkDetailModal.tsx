@@ -15,8 +15,16 @@ import {
 } from 'lucide-react';
 
 export default function LandmarkDetailModal() {
-  const { selectedLandmark, setSelectedLandmark, checkins, toggleCheckin, reviews, addReview } =
-    useAppContext();
+  const {
+    selectedLandmark,
+    setSelectedLandmark,
+    checkins,
+    toggleCheckin,
+    reviews,
+    addReview,
+    userLedger,
+    setSelectedStatementSite,
+  } = useAppContext();
   const { triggerCelebration } = useConfetti();
 
   const [ratingInput, setRatingInput] = useState(5);
@@ -27,6 +35,12 @@ export default function LandmarkDetailModal() {
 
   const isCheckedIn = checkins.includes(selectedLandmark.id);
   const landmarkReviews = reviews[selectedLandmark.id] || [];
+
+  const siteTransactions = userLedger.filter((e) => e.spot === selectedLandmark.name);
+  const sitePts = siteTransactions.reduce((sum, e) => sum + e.pts, 0);
+  const isLoyal = sitePts >= 1000;
+  const isCulinary = selectedLandmark.category === 'culinary';
+  const discountPct = isCulinary ? 10 : 5;
 
   const handleCheckin = () => {
     if (!isCheckedIn) {
@@ -140,6 +154,48 @@ export default function LandmarkDetailModal() {
             </>
           )}
         </button>
+
+        {/* Site Loyalty Score & Achievement Card */}
+        <div
+          className={`p-4 rounded-2xl border ${
+            isLoyal
+              ? 'bg-gradient-to-br from-amber-50 to-white border-amber-300/80 shadow-xs'
+              : 'bg-gray-50 border-gray-200/80'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5">
+              <span className="text-base">{isLoyal ? '👑' : '🏆'}</span>
+              <span className="text-xs font-bold text-gray-900 font-outfit">Site Loyalty Balance</span>
+            </div>
+            <span className="text-xs font-extrabold text-[#ff9898] font-mono">
+              {sitePts.toLocaleString()} pts
+            </span>
+          </div>
+
+          <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mb-1.5">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${
+                isLoyal ? 'bg-amber-500' : 'bg-[#ff9898]'
+              }`}
+              style={{ width: `${Math.min(100, (sitePts / 1000) * 100)}%` }}
+            />
+          </div>
+
+          <div className="flex items-center justify-between text-[10px] text-gray-500">
+            <span>
+              {isLoyal
+                ? `👑 Loyal Customer (${discountPct}% discount active)`
+                : `${(1000 - sitePts).toLocaleString()} pts to Loyal Customer`}
+            </span>
+            <button
+              onClick={() => setSelectedStatementSite(selectedLandmark.name)}
+              className="text-[#ff9898] font-bold hover:underline cursor-pointer flex items-center gap-0.5"
+            >
+              Statement →
+            </button>
+          </div>
+        </div>
 
         {/* Overview & Description */}
         <div>

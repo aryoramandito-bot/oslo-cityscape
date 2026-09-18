@@ -1,7 +1,13 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useOptimistic, useTransition } from 'react';
-import { Landmark, Review, CityId, TabType, UserProfile } from '../types';
+import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption } from '../types';
 import { mockLandmarks } from '../data/jakarta';
 import { mockBandungLandmarks } from '../data/bandung';
+import { initialUserLedger, interestBadges } from '../data/initialLedger';
+
+export interface PointsToastData {
+  message: string;
+  icon: string;
+}
 
 interface AppContextType {
   activeCity: CityId;
@@ -28,6 +34,16 @@ interface AppContextType {
   setSearchQuery: (query: string) => void;
   categoryFilter: 'all' | 'attraction' | 'culinary';
   setCategoryFilter: (cat: 'all' | 'attraction' | 'culinary') => void;
+  sortOption: SortOption;
+  setSortOption: (sort: SortOption) => void;
+  // Loyalty & Ledger
+  loyaltyPoints: number;
+  userLedger: LedgerEntry[];
+  rewardPoints: (pts: number, activityName: string, icon?: string) => void;
+  selectedStatementSite: string | null;
+  setSelectedStatementSite: (site: string | null) => void;
+  pointsToast: PointsToastData | null;
+  setPointsToast: (toast: PointsToastData | null) => void;
 }
 
 const defaultUserProfile: UserProfile = {
@@ -70,6 +86,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return (localStorage.getItem('oslo_active_city') as CityId) || 'jakarta';
   });
   
+  // Landing page defaults to explore
   const [activeTab, setActiveTab] = useState<TabType>('explore');
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
   const [isCitySwitcherOpen, setIsCitySwitcherOpen] = useState(false);
@@ -77,6 +94,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [activeIntroCity, setActiveIntroCity] = useState<CityId | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'attraction' | 'culinary'>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('default');
+
+  // Loyalty points & ledger
+  const [loyaltyPoints, setLoyaltyPoints] = useState<number>(() => {
+    const saved = localStorage.getItem('oslo_loyalty_points');
+    return saved ? parseInt(saved, 10) : 6650;
+  });
+
+  const [userLedger, setUserLedger] = useState<LedgerEntry[]>(() => {
+    const saved = localStorage.getItem('oslo_user_ledger');
+    return saved ? JSON.parse(saved) : initialUserLedger;
+  });
+
+  const [selectedStatementSite, setSelectedStatementSite] = useState<string | null>(null);
+  const [pointsToast, setPointsToast] = useState<PointsToastData | null>(null);
 
   const [userProfile, setUserProfile] = useState<UserProfile>(() => {
     const saved = localStorage.getItem('oslo_user_profile');
@@ -85,7 +117,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const [checkins, setCheckins] = useState<string[]>(() => {
     const saved = localStorage.getItem('oslo_checkins');
-    return saved ? JSON.parse(saved) : ['1', '3']; // Pre-checked Monas and Soto Betawi
+    return saved ? JSON.parse(saved) : ['1', '2', '31']; // Original checkins from prototype
   });
 
   const [reviews, setReviews] = useState<Record<string, Review[]>>(() => {
@@ -93,7 +125,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return saved ? JSON.parse(saved) : defaultReviews;
   });
 
-  // React 19 useTransition for smooth chapter and tab navigation
   const [, startTransition] = useTransition();
 
   const setActiveCity = (city: CityId) => {
@@ -103,7 +134,82 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  // React 19 Optimistic check-ins
+  const landmarks = activeCity === 'bandung' ? mockBandungLandmarks : mockLandmarks;
+  const allLandmarks = [...mockLandmarks, ...mockBandungLandmarks];
+
+  // Helper to award points and check badges
+  const rewardPoints = (pts: number, activityName: string, icon: string = '⭐') => {
+    const todayFormatted = new Date().toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+
+    const newEntry: LedgerEntry = {
+      id: 'l_' + Date.now(),
+      action: activityName.includes('Check')
+        ? 'Check-In'
+        : activityName.includes('Review')
+        ? 'Review'
+        : 'Activity',
+      spot: activityName,
+      pts,
+      icon,
+      date: todayFormatted
+    };
+
+    setLoyaltyPoints(prev => {
+      const next = prev + pts;
+      localStorage.setItem('oslo_loyalty_points', next.toString());
+      return next;
+    });
+
+    setUserLedger(prev => {
+      const nextLedger = [newEntry, ...prev];
+
+      // Check for tag-based badges to award
+      const visitedSpots = nextLedger
+        .filter(e => e.action === 'Check-In' || e.action === 'Order' || e.action === 'Review')
+        .map(e => e.spot);
+
+      const tagCounts: Record<string, number> = {};
+      visitedSpots.forEach(spotName => {
+        const spot = allLandmarks.find(l => l.name === spotName);
+        if (spot?.tags) {
+          spot.tags.forEach(tag => {
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          });
+        }
+      });
+
+      interestBadges.forEach(badge => {
+        const alreadyHas = nextLedger.some(e => e.action === 'Badge Unlocked' && e.spot === badge.title);
+        if (!alreadyHas && (tagCounts[badge.tag] || 0) >= badge.minCount) {
+          const badgeEntry: LedgerEntry = {
+            id: 'badge_' + Date.now(),
+            action: 'Badge Unlocked',
+            spot: badge.title,
+            pts: badge.pts,
+            icon: badge.icon || '🏅',
+            date: todayFormatted
+          };
+          nextLedger.unshift(badgeEntry);
+          setLoyaltyPoints(curr => curr + badge.pts);
+        }
+      });
+
+      localStorage.setItem('oslo_user_ledger', JSON.stringify(nextLedger));
+      return nextLedger;
+    });
+
+    // Fire celebration toast
+    setPointsToast({
+      message: `+${pts} pts for ${activityName}`,
+      icon
+    });
+  };
+
+  // Optimistic check-in
   const [optimisticCheckins, setOptimisticCheckin] = useOptimistic(
     checkins,
     (current, id: string) => {
@@ -115,15 +221,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const toggleCheckin = (id: string) => {
+    const landmark = allLandmarks.find(l => l.id === id);
+    const willBeCheckedIn = !checkins.includes(id);
+
     setOptimisticCheckin(id);
     setCheckins(prev => {
       const updated = prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id];
       localStorage.setItem('oslo_checkins', JSON.stringify(updated));
       return updated;
     });
+
+    if (willBeCheckedIn && landmark) {
+      rewardPoints(100, landmark.name, '📍');
+    }
   };
 
   const addReview = (landmarkId: string, rating: number, comment: string) => {
+    const landmark = allLandmarks.find(l => l.id === landmarkId);
     const newReview: Review = {
       id: 'rev_' + Date.now(),
       author: userProfile.name || 'Anonymous Explorer',
@@ -141,14 +255,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('oslo_reviews', JSON.stringify(updated));
       return updated;
     });
+
+    if (landmark) {
+      rewardPoints(150, `${landmark.name} Review`, '⭐');
+    }
   };
 
   useEffect(() => {
     localStorage.setItem('oslo_user_profile', JSON.stringify(userProfile));
   }, [userProfile]);
-
-  const landmarks = activeCity === 'bandung' ? mockBandungLandmarks : mockLandmarks;
-  const allLandmarks = [...mockLandmarks, ...mockBandungLandmarks];
 
   return (
     <AppContext.Provider
@@ -177,6 +292,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setSearchQuery,
         categoryFilter,
         setCategoryFilter,
+        sortOption,
+        setSortOption,
+        loyaltyPoints,
+        userLedger,
+        rewardPoints,
+        selectedStatementSite,
+        setSelectedStatementSite,
+        pointsToast,
+        setPointsToast,
       }}
     >
       {children}

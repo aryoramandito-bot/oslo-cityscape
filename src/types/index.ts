@@ -68,9 +68,29 @@ export interface UserProfile {
   isVerified: boolean;
 }
 
-export type TabType = 'portal' | 'explore' | 'events' | 'vault' | 'perks';
+export type TabType = 'explore' | 'events' | 'vault' | 'perks' | 'portal';
 
 export interface RadarCoordinate {
   x: number;
   y: number;
 }
+
+export interface LedgerEntry {
+  id: string;
+  action: string;
+  spot: string;
+  pts: number;
+  icon: string;
+  date: string;
+}
+
+export interface BadgeItem {
+  tag: string;
+  title: string;
+  minCount: number;
+  pts: number;
+  icon: string;
+}
+
+export type SortOption = 'default' | 'rating' | 'name';
+
