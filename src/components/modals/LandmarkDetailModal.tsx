@@ -24,6 +24,8 @@ export default function LandmarkDetailModal() {
     addReview,
     userLedger,
     setSelectedStatementSite,
+    openMapToLandmark,
+    getLandmarkDistance,
   } = useAppContext();
   const { triggerCelebration } = useConfetti();
 
@@ -115,22 +117,30 @@ export default function LandmarkDetailModal() {
       {/* Scrollable Body Content */}
       <div className="flex-1 overflow-y-auto p-5 space-y-5">
         {/* Quick Details Bar */}
-        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100 flex-wrap gap-2">
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
             <Clock className="w-3.5 h-3.5 text-gray-400 shrink-0" />
             <span className="font-medium text-[11px]">{selectedLandmark.hours}</span>
           </div>
 
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${selectedLandmark.lat},${selectedLandmark.lng}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-[11px] font-bold text-[#ff9898] hover:underline"
-          >
-            <MapPin className="w-3 h-3" />
-            <span>Map Coordinates</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
+          <div className="flex items-center gap-2">
+            {getLandmarkDistance(selectedLandmark) && (
+              <span className="text-[10px] font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+                📍 {getLandmarkDistance(selectedLandmark)}
+              </span>
+            )}
+            <button
+              onClick={() => {
+                setSelectedLandmark(null);
+                openMapToLandmark(selectedLandmark);
+              }}
+              className="flex items-center gap-1 text-[11px] font-bold text-[#ff9898] hover:underline cursor-pointer"
+              title="Open in-app Real Map centered here"
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              <span>Real Map</span>
+            </button>
+          </div>
         </div>
 
         {/* Check-in CTA Button */}

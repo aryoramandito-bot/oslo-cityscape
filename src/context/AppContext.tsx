@@ -3,6 +3,7 @@ import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption
 import { mockLandmarks } from '../data/jakarta';
 import { mockBandungLandmarks } from '../data/bandung';
 import { initialUserLedger, interestBadges } from '../data/initialLedger';
+import { Coordinates, CITY_CENTERS, getDistanceInMeters, formatDistance } from '../utils/geo';
 
 export interface PointsToastData {
   message: string;
@@ -36,6 +37,13 @@ interface AppContextType {
   setCategoryFilter: (cat: 'all' | 'attraction' | 'culinary') => void;
   sortOption: SortOption;
   setSortOption: (sort: SortOption) => void;
+  // Geospatial & Map
+  userLocation: Coordinates | null;
+  setUserLocation: (coords: Coordinates | null) => void;
+  mapTargetLandmark: Landmark | null;
+  setMapTargetLandmark: (lm: Landmark | null) => void;
+  openMapToLandmark: (lm: Landmark) => void;
+  getLandmarkDistance: (lm: Landmark) => string | null;
   // Loyalty & Ledger
   loyaltyPoints: number;
   userLedger: LedgerEntry[];
@@ -136,6 +144,44 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const landmarks = activeCity === 'bandung' ? mockBandungLandmarks : mockLandmarks;
   const allLandmarks = [...mockLandmarks, ...mockBandungLandmarks];
+
+  // Geospatial state & Geolocation watcher
+  const [userLocation, setUserLocation] = useState<Coordinates | null>(() => {
+    return CITY_CENTERS[activeCity] || CITY_CENTERS.jakarta;
+  });
+  const [mapTargetLandmark, setMapTargetLandmark] = useState<Landmark | null>(null);
+
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      const watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          setUserLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          console.warn('Geolocation fallback to city center:', err.message);
+          setUserLocation(CITY_CENTERS[activeCity] || CITY_CENTERS.jakarta);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      );
+      return () => navigator.geolocation.clearWatch(watchId);
+    } else {
+      setUserLocation(CITY_CENTERS[activeCity] || CITY_CENTERS.jakarta);
+    }
+  }, [activeCity]);
+
+  const openMapToLandmark = (lm: Landmark) => {
+    setMapTargetLandmark(lm);
+    setIsRadarMapOpen(true);
+  };
+
+  const getLandmarkDistance = (lm: Landmark): string | null => {
+    if (!userLocation) return null;
+    const meters = getDistanceInMeters(userLocation.lat, userLocation.lng, lm.lat, lm.lng);
+    return formatDistance(meters);
+  };
 
   // Helper to award points and check badges
   const rewardPoints = (pts: number, activityName: string, icon: string = '⭐') => {
@@ -294,6 +340,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setCategoryFilter,
         sortOption,
         setSortOption,
+        userLocation,
+        setUserLocation,
+        mapTargetLandmark,
+        setMapTargetLandmark,
+        openMapToLandmark,
+        getLandmarkDistance,
         loyaltyPoints,
         userLedger,
         rewardPoints,

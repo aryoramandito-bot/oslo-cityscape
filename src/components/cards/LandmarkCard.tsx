@@ -9,10 +9,11 @@ interface LandmarkCardProps {
 }
 
 export default function LandmarkCard({ landmark }: LandmarkCardProps) {
-  const { checkins, reviews, setSelectedLandmark, activeCity } = useAppContext();
+  const { checkins, reviews, setSelectedLandmark, activeCity, getLandmarkDistance } = useAppContext();
 
   const isCheckedIn = checkins.includes(landmark.id);
   const isJakarta = activeCity === 'jakarta';
+  const distance = getLandmarkDistance(landmark);
 
   // Calculate live review rating or fallback
   const siteReviews = reviews[landmark.id] || [];
@@ -58,6 +59,13 @@ export default function LandmarkCard({ landmark }: LandmarkCardProps) {
           <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
           <span>{averageRating}</span>
         </div>
+
+        {/* Distance Floating Tag */}
+        {distance && (
+          <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-md text-white flex items-center gap-1 text-[9px] font-mono font-medium">
+            <span>📍 {distance}</span>
+          </div>
+        )}
       </div>
 
       {/* Content Container */}
