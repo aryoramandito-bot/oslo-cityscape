@@ -1,20 +1,73 @@
-import { useState } from 'react';
-import Onboarding from './components/Onboarding';
-import Dashboard from './components/Dashboard';
-import { AppProvider } from './context/AppContext';
+import { useState, useEffect } from 'react';
+import { AppProvider, useAppContext } from './context/AppContext';
+import Header from './components/common/Header';
+import BottomNav from './components/navigation/BottomNav';
+import ExploreTab from './components/tabs/ExploreTab';
+import PortalTab from './components/tabs/PortalTab';
+import EventsTab from './components/tabs/EventsTab';
+import VaultTab from './components/tabs/VaultTab';
+import PerksTab from './components/tabs/PerksTab';
+import CitySwitcherModal from './components/modals/CitySwitcherModal';
+import CityIntroModal from './components/modals/CityIntroModal';
+import RadarMapModal from './components/modals/RadarMapModal';
+import LandmarkDetailModal from './components/modals/LandmarkDetailModal';
+import OnboardingModal from './components/modals/OnboardingModal';
 
-export default function App() {
-  const [isActiveToday, setIsActiveToday] = useState(false);
+function MainLayout() {
+  const { activeTab } = useAppContext();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    const isCompleted = localStorage.getItem('oslo_onboarding_completed');
+    if (!isCompleted) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const renderActiveTab = () => {
+    switch (activeTab) {
+      case 'portal':
+        return <PortalTab />;
+      case 'explore':
+        return <ExploreTab />;
+      case 'events':
+        return <EventsTab />;
+      case 'vault':
+        return <VaultTab />;
+      case 'perks':
+        return <PerksTab />;
+      default:
+        return <ExploreTab />;
+    }
+  };
 
   return (
+    <div className="mx-auto max-w-md min-h-screen bg-[#f9f8f6] text-gray-800 flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.06)] border-x border-gray-200/60 font-sans">
+      {/* Persistent Header */}
+      <Header />
+
+      {/* Main Tab View Area */}
+      <main className="flex-1 px-4 pt-3 overflow-y-auto">
+        {renderActiveTab()}
+      </main>
+
+      {/* Persistent Bottom Navigation */}
+      <BottomNav />
+
+      {/* Modals & Overlays */}
+      <CitySwitcherModal />
+      <CityIntroModal />
+      <RadarMapModal />
+      <LandmarkDetailModal />
+      {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
     <AppProvider>
-      <div className="mx-auto max-w-md h-[100dvh] bg-[#0c0c0c] text-gray-200 border-x border-[#222] overflow-hidden flex flex-col relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-        {!isActiveToday ? (
-          <Onboarding onComplete={() => setIsActiveToday(true)} />
-        ) : (
-          <Dashboard />
-        )}
-      </div>
+      <MainLayout />
     </AppProvider>
   );
 }
