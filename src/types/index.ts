@@ -23,7 +23,7 @@ export interface Review {
   comment: string;
 }
 
-export type CityId = 'jakarta' | 'bandung';
+export type CityId = 'jakarta' | 'bandung' | 'solo';
 
 export interface CityChapter {
   id: CityId;

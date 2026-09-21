@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode, useOptimisti
 import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption } from '../types';
 import { mockLandmarks } from '../data/jakarta';
 import { mockBandungLandmarks } from '../data/bandung';
+import { mockSoloLandmarks } from '../data/solo';
 import { initialUserLedger, interestBadges } from '../data/initialLedger';
 import { Coordinates, CITY_CENTERS, getDistanceInMeters, formatDistance } from '../utils/geo';
 
@@ -84,6 +85,18 @@ const defaultReviews: Record<string, Review[]> = {
   ],
   'b18': [
     { id: 'rb4', author: 'Taufik K.', rating: 5, date: 'Today', comment: 'The best batagor in Bandung hands down. Crispy exterior with aromatic peanut sauce.' }
+  ],
+  's1': [
+    { id: 'rs1', author: 'Danang W.', rating: 5, date: 'Yesterday', comment: 'Majestic Javanese royal palace! The classical architecture and museum collection are incredible.' }
+  ],
+  's2': [
+    { id: 'rs2', author: 'Siti M.', rating: 5, date: '3 days ago', comment: 'The largest teak pendopo in Southeast Asia. Royal cultural elegance at its finest.' }
+  ],
+  's17': [
+    { id: 'rs3', author: 'Bambang S.', rating: 5, date: 'Today', comment: 'The signature beef steak salad with sweet soy broth is a true royal culinary masterpiece!' }
+  ],
+  's20': [
+    { id: 'rs4', author: 'Tri H.', rating: 5, date: '2 days ago', comment: 'Warm, melt-in-the-mouth serabi straight from the clay pots. Unmatched authentic taste.' }
   ]
 };
 
@@ -142,8 +155,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const landmarks = activeCity === 'bandung' ? mockBandungLandmarks : mockLandmarks;
-  const allLandmarks = [...mockLandmarks, ...mockBandungLandmarks];
+  const landmarks = activeCity === 'bandung'
+    ? mockBandungLandmarks
+    : activeCity === 'solo'
+    ? mockSoloLandmarks
+    : mockLandmarks;
+  const allLandmarks = [...mockLandmarks, ...mockBandungLandmarks, ...mockSoloLandmarks];
 
   // Geospatial state & Geolocation watcher
   const [userLocation, setUserLocation] = useState<Coordinates | null>(() => {

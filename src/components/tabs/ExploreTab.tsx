@@ -17,8 +17,12 @@ export default function ExploreTab() {
     checkins,
   } = useAppContext();
 
-  const isJakarta = activeCity === 'jakarta';
-  const activeColor = isJakarta ? 'bg-[#ff9898]' : 'bg-amber-500';
+  const isSolo = activeCity === 'solo';
+  const isBandung = activeCity === 'bandung';
+  const activeColor = isSolo ? 'bg-emerald-600' : isBandung ? 'bg-amber-500' : 'bg-[#ff9898]';
+  const accentTextColor = isSolo ? 'text-emerald-600' : isBandung ? 'text-amber-500' : 'text-[#ff9898]';
+  const nodeName = isSolo ? 'Royal Heritage Node' : isBandung ? 'Highland Node' : 'Capital Node';
+  const discoveryTitle = isSolo ? 'Solo Discovery' : isBandung ? 'Bandung Discovery' : 'Jakarta Discovery';
 
   // 1. Strict Category Filtering
   const filteredByCategory = landmarks.filter((item) => {
@@ -60,11 +64,11 @@ export default function ExploreTab() {
       <div className="flex flex-col gap-3 bg-white p-4 rounded-3xl border border-gray-200/80 shadow-xs">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#ff9898] block">
-              {isJakarta ? 'Capital Node' : 'Highland Node'}
+            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider block ${accentTextColor}`}>
+              {nodeName}
             </span>
             <h1 className="text-lg font-extrabold font-outfit text-gray-900 leading-tight">
-              {isJakarta ? 'Jakarta Discovery' : 'Bandung Discovery'}
+              {discoveryTitle}
             </h1>
           </div>
 

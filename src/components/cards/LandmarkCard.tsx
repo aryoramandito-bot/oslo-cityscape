@@ -86,7 +86,7 @@ export default function LandmarkCard({ landmark }: LandmarkCardProps) {
           </div>
           <span
             className={`font-semibold shrink-0 font-outfit ${
-              isJakarta ? 'text-[#ff9898]' : 'text-amber-500'
+              activeCity === 'solo' ? 'text-emerald-600' : activeCity === 'bandung' ? 'text-amber-500' : 'text-[#ff9898]'
             }`}
           >
             Details →

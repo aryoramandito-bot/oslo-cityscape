@@ -6,6 +6,7 @@ export interface Coordinates {
 export const CITY_CENTERS: Record<string, Coordinates> = {
   jakarta: { lat: -6.175392, lng: 106.827153 }, // Monas
   bandung: { lat: -6.9025, lng: 107.6186 },    // Gedung Sate
+  solo: { lat: -7.5666, lng: 110.8283 },       // Keraton / Slamet Riyadi
 };
 
 /**

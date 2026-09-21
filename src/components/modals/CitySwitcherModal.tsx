@@ -21,6 +21,8 @@ export default function CitySwitcherModal() {
       setActiveCity(city);
       if (city === 'bandung') {
         setActiveIntroCity('bandung');
+      } else if (city === 'solo') {
+        setActiveIntroCity('solo');
       } else {
         triggerConfetti();
       }
@@ -67,7 +69,7 @@ export default function CitySwitcherModal() {
                   Jakarta Chapter
                 </span>
                 <span className="text-[10px] text-gray-400 font-mono">
-                  38 Curated Sites · Capital Node
+                  34 Curated Sites · Capital Node
                 </span>
               </div>
             </div>
@@ -97,6 +99,31 @@ export default function CitySwitcherModal() {
               </div>
             </div>
             {activeCity === 'bandung' && <Check className="w-4 h-4 text-amber-500" />}
+          </div>
+
+          {/* Solo Option */}
+          <div
+            onClick={() => handleSelect('solo')}
+            className={`p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all ${
+              activeCity === 'solo'
+                ? 'border-emerald-600 bg-emerald-50/20 shadow-xs'
+                : 'border-gray-200 hover:border-gray-300 bg-white'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-sm font-outfit shadow-xs">
+                SL
+              </div>
+              <div className="text-left">
+                <span className="text-xs font-bold text-gray-900 font-outfit block">
+                  Solo Chapter
+                </span>
+                <span className="text-[10px] text-gray-400 font-mono">
+                  32 Curated Sites · Spirit of Java
+                </span>
+              </div>
+            </div>
+            {activeCity === 'solo' && <Check className="w-4 h-4 text-emerald-600" />}
           </div>
         </div>
 

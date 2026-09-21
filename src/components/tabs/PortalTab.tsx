@@ -17,34 +17,41 @@ interface ChatMessage {
 export default function PortalTab() {
   const { activeCity, setSelectedLandmark, allLandmarks, setActiveTab } = useAppContext();
   const [input, setInput] = useState('');
+  const cityName = activeCity === 'solo' ? 'Solo (Surakarta)' : activeCity === 'bandung' ? 'Bandung' : 'Jakarta';
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'm1',
       sender: 'assistant',
-      text: `Selamat datang! I am Mpok Voyage, your Oslo Cityscape intelligence. How can I guide your cultural exploration in ${
-        activeCity === 'jakarta' ? 'Jakarta' : 'Bandung'
-      } today?`,
+      text: `Selamat datang! I am Mpok Voyage, your Oslo Cityscape intelligence. How can I guide your cultural exploration in ${cityName} today?`,
       timestamp: 'Just now',
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const isJakarta = activeCity === 'jakarta';
-
-  const quickPrompts = isJakarta
+  const quickPrompts = activeCity === 'solo'
     ? [
+        'Where can I eat authentic Selat Solo?',
+        'Tell me about Keraton Surakarta court history.',
+        'How do I visit Lokananta music recording studio?',
+        'What are the best batik spots in Laweyan & Kauman?',
+      ]
+    : activeCity === 'bandung'
+    ? [
+        'Where is the best Batagor in Bandung?',
+        'How do I visit Kawah Putih crater?',
+        'Tell me about Saung Angklung Udjo music.',
+        'Where can I find legendary Brownies Amanda?',
+      ]
+    : [
         'Where can I eat authentic Soto Betawi?',
         'What cultural events are happening today?',
         'How do I redeem my F&B perks?',
         'Tell me about Kota Tua heritage bicycles.',
-      ]
-    : [
-        'Where is the best Batagor in Bandung?',
-        'How do I visit Kawah Putih crater?',
-        'Tell me about Saung Angklung Udjo music.',
-        'Which cafes on Jalan Braga are iconic?',
       ];
+
+  const isJakarta = activeCity === 'jakarta';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -90,10 +97,36 @@ export default function PortalTab() {
           label: 'View Batagor Kingsley',
           targetId: 'b18',
         };
+      } else if (q.includes('selat') || q.includes('lies')) {
+        reply =
+          'Selat Solo Mbak Lies in Serengan is the royal benchmark for Javanese beef steak salad — braised tender beef, soy egg, vegetables, and spiced mustard broth. 15% perk active!';
+        action = {
+          type: 'NAVIGATE',
+          label: 'View Selat Solo Mbak Lies',
+          targetId: 's17',
+        };
+      } else if (q.includes('keraton') || q.includes('palace') || q.includes('mangkunegaran')) {
+        reply =
+          'Surakarta is home to two great palaces: Keraton Kasunanan (founded 1745) and Pura Mangkunegaran (1757, featuring Southeast Asia\'s largest solid teak open pendopo).';
+        action = {
+          type: 'NAVIGATE',
+          label: 'View Keraton Surakarta',
+          targetId: 's1',
+        };
+      } else if (q.includes('lokananta') || q.includes('vinyl') || q.includes('music')) {
+        reply =
+          'Lokananta is Indonesia\'s legendary first state recording studio and vinyl press, brilliantly revitalized into a modern audio museum, archive, and live amphitheater.';
+        action = {
+          type: 'NAVIGATE',
+          label: 'View Lokananta',
+          targetId: 's9',
+        };
       } else if (q.includes('event') || q.includes('tour') || q.includes('dance')) {
-        reply = isJakarta
-          ? 'Upcoming highlight: The Ondel-Ondel Puppet Street Dance takes place at 04:00 PM at Kota Tua Esplanade, followed by the Monas Laser Show at 08:00 PM.'
-          : 'Upcoming highlight: Grand Interactive Angklung Orchestra at Saung Angklung Udjo starts daily at 03:30 PM. Each guest receives a tuned bamboo instrument!';
+        reply = activeCity === 'solo'
+          ? 'Upcoming highlight: Royal Mangkunegaran Court Dance under the Pendopo Agung, and SIPA international performances at Benteng Vastenburg.'
+          : activeCity === 'bandung'
+          ? 'Upcoming highlight: Grand Interactive Angklung Orchestra at Saung Angklung Udjo starts daily at 03:30 PM. Each guest receives a tuned bamboo instrument!'
+          : 'Upcoming highlight: The Ondel-Ondel Puppet Street Dance takes place at 04:00 PM at Kota Tua Esplanade, followed by the Monas Laser Show at 08:00 PM.';
         action = {
           type: 'VIEW_EVENT',
           label: 'Browse Events Calendar',
@@ -114,9 +147,7 @@ export default function PortalTab() {
           targetId: 'b6',
         };
       } else {
-        reply = `Understood. Based on verified heritage archives for ${
-          isJakarta ? 'Jakarta' : 'Bandung'
-        }, exploring early morning or late afternoon yields the best weather. Feel free to ask about landmarks, walking routes, or regional delicacies!`;
+        reply = `Understood. Based on verified heritage archives for ${cityName}, exploring early morning or late afternoon yields the best weather. Feel free to ask about landmarks, walking routes, or regional delicacies!`;
       }
 
       const assistantMsg: ChatMessage = {
@@ -161,7 +192,7 @@ export default function PortalTab() {
             </span>
           </div>
           <p className="text-[11px] text-gray-400">
-            Heritage Wayfinding & Cultural Concierge · {isJakarta ? 'Jakarta' : 'Bandung'}
+            Heritage Wayfinding & Cultural Concierge · {cityName}
           </p>
         </div>
       </div>
@@ -232,7 +263,7 @@ export default function PortalTab() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          placeholder={`Ask Mpok Voyage about ${isJakarta ? 'Jakarta' : 'Bandung'}...`}
+          placeholder={`Ask Mpok Voyage about ${cityName}...`}
           className="w-full pl-4 pr-12 py-3 rounded-2xl bg-white border border-gray-200/90 text-xs text-gray-800 placeholder-gray-400 focus:outline-hidden focus:border-[#ff9898] focus:ring-2 focus:ring-[#ff9898]/20 shadow-xs"
         />
         <button

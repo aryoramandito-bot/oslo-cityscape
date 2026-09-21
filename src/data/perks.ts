@@ -69,5 +69,40 @@ export const mockPerks: PerkItem[] = [
     description: 'Front-row pavilion seats and a miniature tuned souvenir angklung instrument to take home.',
     code: 'ANGKLUNG-VIP',
     tags: ['Culture', 'Exclusive']
+  },
+
+  // Solo Perks
+  {
+    id: 'ps1',
+    title: '15% Off Royal Selat Solo Platter',
+    merchant: 'Selat Solo Mbak Lies',
+    discount: '15% OFF',
+    validUntil: 'Valid Everyday',
+    cityId: 'solo',
+    description: 'Special 15% discount on signature tender beef braised steak salad and homemade mustard.',
+    code: 'LIES-SOLO15',
+    tags: ['Culinary', 'Signature']
+  },
+  {
+    id: 'ps2',
+    title: 'Complimentary Serabi Notosuman Roll Box',
+    merchant: 'Serabi Notosuman Ny. Handayani',
+    discount: 'GIFT BOX',
+    validUntil: 'Min. Purchase 100k',
+    cityId: 'solo',
+    description: 'Receive a complimentary box of warm charcoal-baked coconut serabi pancakes.',
+    code: 'NOTOSUMAN-GIFT',
+    tags: ['Snack', 'Oleh-Oleh']
+  },
+  {
+    id: 'ps3',
+    title: 'Lokananta Audio Heritage Priority Access',
+    merchant: 'Lokananta Bloc Surakarta',
+    discount: 'PRIORITY PASS',
+    validUntil: 'Tue - Sun 10:00 - 18:00',
+    cityId: 'solo',
+    description: 'Complimentary priority guided entry to the historic master vinyl vaults and analog mastering galleries.',
+    code: 'LOKANANTA-VIP',
+    tags: ['Museum', 'Music']
   }
 ];

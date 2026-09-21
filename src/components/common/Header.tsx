@@ -4,7 +4,12 @@ import { ChevronDown, Sparkles, MapPin } from 'lucide-react';
 export default function Header() {
   const { activeCity, setIsCitySwitcherOpen, setIsRadarMapOpen, userProfile } = useAppContext();
 
-  const isJakarta = activeCity === 'jakarta';
+  const isSolo = activeCity === 'solo';
+  const isBandung = activeCity === 'bandung';
+  const badgeColor = isSolo ? 'bg-emerald-600' : isBandung ? 'bg-amber-500' : 'bg-[#ff9898]';
+  const badgeCode = isSolo ? 'SL' : isBandung ? 'BD' : 'JK';
+  const chapterName = isSolo ? 'Solo Chapter' : isBandung ? 'Bandung Chapter' : 'Jakarta Chapter';
+  const siteCountText = isSolo ? '32 Curated Sites' : isBandung ? '36 Curated Sites' : '34 Curated Sites';
 
   return (
     <header className="h-16 px-5 border-b border-gray-200/60 bg-[#f9f8f6]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
@@ -15,21 +20,19 @@ export default function Header() {
         title="Switch City Chapter"
       >
         <div
-          className={`w-8 h-8 rounded-xl flex items-center justify-center font-outfit font-extrabold text-xs text-white shadow-xs transition-transform group-hover:scale-105 ${
-            isJakarta ? 'bg-[#ff9898]' : 'bg-amber-500'
-          }`}
+          className={`w-8 h-8 rounded-xl flex items-center justify-center font-outfit font-extrabold text-xs text-white shadow-xs transition-transform group-hover:scale-105 ${badgeColor}`}
         >
-          {isJakarta ? 'JK' : 'BD'}
+          {badgeCode}
         </div>
         <div className="flex flex-col">
           <div className="flex items-center gap-1">
             <span className="text-xs font-bold text-gray-800 font-outfit">
-              {isJakarta ? 'Jakarta Chapter' : 'Bandung Chapter'}
+              {chapterName}
             </span>
             <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" />
           </div>
           <span className="text-[9px] text-gray-400 font-mono">
-            {isJakarta ? '38 Curated Sites' : '36 Curated Sites'}
+            {siteCountText}
           </span>
         </div>
       </button>

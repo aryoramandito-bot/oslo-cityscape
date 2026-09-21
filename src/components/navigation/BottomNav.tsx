@@ -5,9 +5,10 @@ import { TabType } from '../../types';
 export default function BottomNav() {
   const { activeTab, setActiveTab, activeCity } = useAppContext();
 
-  const isJakarta = activeCity === 'jakarta';
-  const activeColor = isJakarta ? 'text-[#ff9898]' : 'text-amber-500';
-  const activeDot = isJakarta ? 'bg-[#ff9898]' : 'bg-amber-500';
+  const isSolo = activeCity === 'solo';
+  const isBandung = activeCity === 'bandung';
+  const activeColor = isSolo ? 'text-emerald-600' : isBandung ? 'text-amber-500' : 'text-[#ff9898]';
+  const activeDot = isSolo ? 'bg-emerald-600' : isBandung ? 'bg-amber-500' : 'bg-[#ff9898]';
 
   const navItems: { id: TabType; label: string; icon: typeof Compass }[] = [
     { id: 'explore', label: 'Explore', icon: Compass },

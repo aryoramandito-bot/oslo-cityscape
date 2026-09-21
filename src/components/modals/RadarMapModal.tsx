@@ -103,7 +103,7 @@ export default function RadarMapModal() {
         {/* City & POI indicator */}
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] font-mono font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-md">
-            {isJakarta ? 'JKT' : 'BDG'} · {landmarks.length}
+            {activeCity === 'solo' ? 'SLO' : activeCity === 'bandung' ? 'BDG' : 'JKT'} · {landmarks.length}
           </span>
         </div>
       </header>

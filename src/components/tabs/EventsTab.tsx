@@ -25,7 +25,7 @@ export default function EventsTab() {
             Cultural Timetable
           </span>
           <h2 className="text-base font-bold text-gray-900 font-outfit mt-0.5">
-            {isJakarta ? 'Jakarta Daily Happenings' : 'Bandung Festival Schedule'}
+            {activeCity === 'solo' ? 'Solo Heritage & Festival Schedule' : activeCity === 'bandung' ? 'Bandung Festival Schedule' : 'Jakarta Daily Happenings'}
           </h2>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Synchronized with local heritage hubs & verified schedules
