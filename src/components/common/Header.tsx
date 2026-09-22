@@ -2,7 +2,7 @@ import { useAppContext } from '../../context/AppContext';
 import { ChevronDown, Sparkles, MapPin } from 'lucide-react';
 
 export default function Header() {
-  const { activeCity, setIsCitySwitcherOpen, setIsRadarMapOpen, userProfile } = useAppContext();
+  const { activeCity, setIsCitySwitcherOpen, setIsRadarMapOpen, userProfile, setIsLogoutModalOpen } = useAppContext();
 
   const isLaweyan = activeCity === 'laweyan';
   const isSolo = activeCity === 'solo';
@@ -18,21 +18,20 @@ export default function Header() {
       <button
         onClick={() => setIsCitySwitcherOpen(true)}
         className="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-white border border-gray-200/80 shadow-xs hover:border-gray-300 transition-all cursor-pointer group text-left"
-        title="Switch City Chapter"
       >
         <div
-          className={`w-8 h-8 rounded-xl flex items-center justify-center font-outfit font-extrabold text-xs text-white shadow-xs transition-transform group-hover:scale-105 ${badgeColor}`}
+          className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shadow-xs ${badgeColor}`}
         >
           {badgeCode}
         </div>
         <div className="flex flex-col">
           <div className="flex items-center gap-1">
-            <span className="text-xs font-bold text-gray-800 font-outfit">
+            <span className="font-outfit font-extrabold text-xs text-gray-900 tracking-tight leading-none">
               {chapterName}
             </span>
             <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" />
           </div>
-          <span className="text-[9px] text-gray-400 font-mono">
+          <span className="text-[10px] text-gray-400 font-medium font-mono mt-0.5 leading-none">
             {siteCountText}
           </span>
         </div>
@@ -52,10 +51,12 @@ export default function Header() {
           <span className="font-outfit text-[11px] font-bold">Radar</span>
         </button>
 
-        {/* Explorer Avatar */}
-        <div
-          className="w-9 h-9 rounded-xl bg-white border border-gray-200/80 flex items-center justify-center shadow-xs relative cursor-pointer"
-          title={`Verified Explorer: ${userProfile.name}`}
+        {/* Explorer Avatar (Tap to open Logout / Profile Screen) */}
+        <button
+          type="button"
+          onClick={() => setIsLogoutModalOpen(true)}
+          className="w-9 h-9 rounded-xl bg-white border border-gray-200/80 hover:border-gray-400 flex items-center justify-center shadow-xs relative cursor-pointer transition-all active:scale-95"
+          title={`Verified Explorer: ${userProfile.name} • Tap to manage session & log out`}
         >
           <span className="font-outfit font-bold text-xs text-gray-700">
             {userProfile.name
@@ -64,14 +65,14 @@ export default function Header() {
                   .map((n) => n[0])
                   .join('')
                   .slice(0, 2)
-              : 'EX'}
+              : 'AW'}
           </span>
           {userProfile.isVerified && (
             <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white flex items-center justify-center">
               <Sparkles className="w-2 h-2 text-white" />
             </div>
           )}
-        </div>
+        </button>
       </div>
     </header>
   );

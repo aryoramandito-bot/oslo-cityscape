@@ -13,18 +13,11 @@ import RadarMapModal from './components/modals/RadarMapModal';
 import LandmarkDetailModal from './components/modals/LandmarkDetailModal';
 import SiteStatementModal from './components/modals/SiteStatementModal';
 import OnboardingModal from './components/modals/OnboardingModal';
+import LogoutModal from './components/modals/LogoutModal';
 import PointsToast from './components/common/PointsToast';
 
 function MainLayout() {
-  const { activeTab } = useAppContext();
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  useEffect(() => {
-    const isCompleted = localStorage.getItem('oslo_onboarding_completed');
-    if (!isCompleted) {
-      setShowOnboarding(true);
-    }
-  }, []);
+  const { activeTab, isLoginModalOpen, setIsLoginModalOpen, isLogoutModalOpen } = useAppContext();
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -65,7 +58,10 @@ function MainLayout() {
       <RadarMapModal />
       <LandmarkDetailModal />
       <SiteStatementModal />
-      {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
+      <LogoutModal />
+      {isLoginModalOpen && (
+        <OnboardingModal onComplete={() => setIsLoginModalOpen(false)} />
+      )}
     </div>
   );
 }

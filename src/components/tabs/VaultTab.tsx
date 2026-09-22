@@ -4,6 +4,7 @@ import {
   MapPin,
   CheckCircle2,
   ChevronRight,
+  LogOut,
 } from 'lucide-react';
 import PassportCardDeck from '../vault/PassportCardDeck';
 
@@ -15,6 +16,7 @@ export default function VaultTab() {
     loyaltyPoints,
     userLedger,
     setSelectedStatementSite,
+    setIsLogoutModalOpen,
   } = useAppContext();
 
   const checkedLandmarks = allLandmarks.filter((item) => checkins.includes(item.id));
@@ -232,6 +234,43 @@ export default function VaultTab() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* Account Session & Sign Out Card */}
+      <div className="bg-white rounded-3xl p-4 border border-gray-200/80 shadow-xs flex items-center justify-between">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-400 to-[#ff9898] text-white flex items-center justify-center font-bold text-sm font-outfit shrink-0">
+            {userProfile.name
+              ? userProfile.name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')
+                  .slice(0, 2)
+              : 'AW'}
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-gray-900 font-outfit truncate">
+                {userProfile.name}
+              </h4>
+              <span className="text-[8.5px] font-mono text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded-md font-bold">
+                Active
+              </span>
+            </div>
+            <span className="text-[10px] text-gray-400 font-mono block truncate mt-0.5">
+              ID: {userProfile.providerUid} · {userProfile.region}
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsLogoutModalOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-100/70 text-rose-600 transition-colors text-xs font-outfit font-bold cursor-pointer shrink-0 ml-2"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Log Out</span>
+        </button>
       </div>
     </div>
   );

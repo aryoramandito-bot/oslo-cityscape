@@ -54,15 +54,21 @@ interface AppContextType {
   setSelectedStatementSite: (site: string | null) => void;
   pointsToast: PointsToastData | null;
   setPointsToast: (toast: PointsToastData | null) => void;
+  // Auth & Session
+  isLogoutModalOpen: boolean;
+  setIsLogoutModalOpen: (open: boolean) => void;
+  isLoginModalOpen: boolean;
+  setIsLoginModalOpen: (open: boolean) => void;
+  logout: () => void;
 }
 
 const defaultUserProfile: UserProfile = {
   providerUid: 'voyage_explorer_882910',
-  name: 'Aryo Ramandito',
+  name: 'Astrid Widayani',
   nationality: 'Indonesian (WNI)',
-  region: 'DKI Jakarta',
-  age: '25-34',
-  gender: 'Male',
+  region: 'Surakarta / Jawa Tengah',
+  age: '35-49',
+  gender: 'Female',
   isVerified: true
 };
 
@@ -144,10 +150,41 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedStatementSite, setSelectedStatementSite] = useState<string | null>(null);
   const [pointsToast, setPointsToast] = useState<PointsToastData | null>(null);
 
+  // Auth & Session state
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(() => {
+    return !localStorage.getItem('oslo_onboarding_completed');
+  });
+
   const [userProfile, setUserProfile] = useState<UserProfile>(() => {
     const saved = localStorage.getItem('oslo_user_profile');
-    return saved ? JSON.parse(saved) : defaultUserProfile;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.name === 'Aryo Ramandito') {
+          return {
+            ...defaultUserProfile,
+            ...parsed,
+            name: 'Astrid Widayani',
+            gender: 'Female',
+            region: 'Surakarta / Jawa Tengah',
+          };
+        }
+        return parsed;
+      } catch (e) {
+        return defaultUserProfile;
+      }
+    }
+    return defaultUserProfile;
   });
+
+  const logout = () => {
+    localStorage.removeItem('oslo_onboarding_completed');
+    localStorage.removeItem('oslo_user_profile');
+    setUserProfile(defaultUserProfile);
+    setIsLogoutModalOpen(false);
+    setIsLoginModalOpen(true);
+  };
 
   const [checkins, setCheckins] = useState<string[]>(() => {
     const saved = localStorage.getItem('oslo_checkins');
@@ -385,6 +422,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setSelectedStatementSite,
         pointsToast,
         setPointsToast,
+        isLogoutModalOpen,
+        setIsLogoutModalOpen,
+        isLoginModalOpen,
+        setIsLoginModalOpen,
+        logout,
       }}
     >
       {children}
