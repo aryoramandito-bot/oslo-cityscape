@@ -1,15 +1,11 @@
-import { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import {
-  ShieldCheck,
-  Sparkles,
   Award,
   MapPin,
   CheckCircle2,
-  RotateCw,
   ChevronRight,
-  TrendingUp,
 } from 'lucide-react';
+import PassportCardDeck from '../vault/PassportCardDeck';
 
 export default function VaultTab() {
   const {
@@ -20,7 +16,6 @@ export default function VaultTab() {
     userLedger,
     setSelectedStatementSite,
   } = useAppContext();
-  const [isFlipped, setIsFlipped] = useState(false);
 
   const checkedLandmarks = allLandmarks.filter((item) => checkins.includes(item.id));
 
@@ -49,106 +44,22 @@ export default function VaultTab() {
       <div className="flex items-center justify-between px-1">
         <div>
           <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#ff9898] block">
-            Digital Identity & Storage
+            Digital Loyalty Passports
           </span>
           <h2 className="text-base font-extrabold text-gray-900 font-outfit mt-0.5">
-            Explorer Vault & Ledger
+            Explorer Vault & Passports
           </h2>
         </div>
         <span className="text-[10px] font-mono text-gray-400 bg-white px-2 py-1 rounded-lg border border-gray-200/80">
-          Tap card to flip
+          Swipe & tap to flip
         </span>
       </div>
 
-      {/* 3D Flip Explorer Passport Card */}
-      <div
-        className="w-full h-52 perspective-1000 cursor-pointer"
-        onClick={() => setIsFlipped((prev) => !prev)}
-      >
-        <div
-          className={`relative w-full h-full duration-500 transform-style-3d transition-transform ${
-            isFlipped ? 'rotate-y-180' : ''
-          }`}
-        >
-          {/* Card Front */}
-          <div className="absolute inset-0 backface-hidden rounded-3xl p-5 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-white shadow-xl flex flex-col justify-between border border-gray-800">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-mono text-[#ff9898]">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>OSLO CITYSCAPE PASSPORT</span>
-                </div>
-                <h3 className="text-lg font-extrabold font-outfit mt-1 tracking-tight">
-                  {userProfile.name}
-                </h3>
-                <span className="text-[10px] font-mono text-gray-400">
-                  ID: {userProfile.providerUid}
-                </span>
-              </div>
-
-              <div className="w-9 h-9 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              </div>
-            </div>
-
-            <div className="flex items-end justify-between border-t border-white/10 pt-3">
-              <div>
-                <span className="text-[9px] uppercase tracking-wider text-gray-400 block font-mono">
-                  Total Loyalty Points
-                </span>
-                <span className="text-base font-extrabold font-outfit text-[#ff9898]">
-                  {loyaltyPoints.toLocaleString()} pts
-                </span>
-              </div>
-
-              <div className="text-right">
-                <span className="text-[9px] uppercase tracking-wider text-gray-400 block font-mono">
-                  Verified Check-ins
-                </span>
-                <span className="text-sm font-extrabold font-outfit text-white">
-                  {checkins.length} Stamped
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card Back (PDP Privacy & Demographics) */}
-          <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-3xl p-5 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950 text-white shadow-xl flex flex-col justify-between border border-gray-800">
-            <div>
-              <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-2.5">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 flex items-center gap-1 font-bold">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  PDP Law Compliant Data
-                </span>
-                <RotateCw className="w-3 h-3 text-gray-400" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-y-2 gap-x-3 text-[11px]">
-                <div>
-                  <span className="text-[9px] text-gray-400 block font-mono">NATIONALITY</span>
-                  <span className="font-semibold text-white">{userProfile.nationality}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] text-gray-400 block font-mono">REGION</span>
-                  <span className="font-semibold text-white">{userProfile.region}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] text-gray-400 block font-mono">AGE BRACKET</span>
-                  <span className="font-semibold text-white">{userProfile.age}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] text-gray-400 block font-mono">STATUS</span>
-                  <span className="font-semibold text-emerald-400">Verified Active</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-[9px] font-mono text-gray-400 border-t border-white/10 pt-2 text-center">
-              Tap anywhere to flip back
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Horizontal Sliding Passport Card Deck */}
+      <PassportCardDeck
+        userProfile={userProfile}
+        onSelectAffiliateSite={(site) => setSelectedStatementSite(site)}
+      />
 
       {/* ========================================== */}
       {/* MY ACTIVITY LEDGER & LOYALTY BREAKDOWN */}

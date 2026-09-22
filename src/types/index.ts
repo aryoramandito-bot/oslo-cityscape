@@ -94,3 +94,26 @@ export interface BadgeItem {
 
 export type SortOption = 'default' | 'rating' | 'name';
 
+export interface PassportLoyaltyCard {
+  id: 'injourney' | 'solo' | 'sarirasa';
+  issuer: string;
+  shortName: string;
+  programTitle: string;
+  tagline: string;
+  tier: string;
+  passportNo: string;
+  gradient: string;
+  accentColor: string;
+  badgeBg: string;
+  badgeText: string;
+  borderClass: string;
+  icon: string;
+  points: number;
+  stampedSites: number;
+  totalSites: number;
+  affiliates: string[];
+  keyBenefits: string[];
+  pdpStatus: string;
+  endorser: string;
+}
+
