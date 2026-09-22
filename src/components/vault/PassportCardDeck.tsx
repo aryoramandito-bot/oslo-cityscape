@@ -146,28 +146,7 @@ export default function PassportCardDeck({
 
   return (
     <div className="w-full flex flex-col gap-3.5 select-none">
-      {/* 1. Header Segmented Switcher Pills */}
-      <div className="flex items-center gap-1.5 p-1 bg-gray-100/90 rounded-2xl border border-gray-200/80 overflow-x-auto no-scrollbar shadow-2xs">
-        {mockPassportCards.map((card, idx) => {
-          const isActive = activeIndex === idx;
-          return (
-            <button
-              key={card.id}
-              onClick={() => selectCard(idx)}
-              className={`flex-1 min-w-[95px] py-1.5 px-2 rounded-xl text-[11px] font-bold font-outfit whitespace-nowrap transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                isActive
-                  ? 'bg-white text-gray-900 shadow-xs font-extrabold'
-                  : 'text-gray-500 hover:text-gray-800'
-              }`}
-            >
-              <span className="text-xs">{card.icon}</span>
-              <span className="truncate">{card.shortName}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 2. Slideable Passport Card Carousel */}
+      {/* Slideable Passport Card Carousel */}
       <div className="relative w-full overflow-hidden rounded-3xl">
         <div
           className="flex will-change-transform"
