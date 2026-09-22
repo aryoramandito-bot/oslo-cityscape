@@ -76,6 +76,32 @@ body {
   animation: radar-pulse 2s infinite;
 }
 
+/* QR Code Laser Scanner Line Animation */
+@keyframes qr-scan {
+  0% {
+    top: 0%;
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  50% {
+    top: 96%;
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.2;
+  }
+}
+
+.animate-qr-scan {
+  animation: qr-scan 2.6s ease-in-out infinite;
+}
+
 /* Safe area padding for mobile notches */
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 16px);
