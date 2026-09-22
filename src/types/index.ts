@@ -36,14 +36,20 @@ export interface CityChapter {
   sitesCount: number;
 }
 
+export type EventCategory = 'workshop' | 'walking' | 'culinary' | 'performance' | 'festival';
+
 export interface EventItem {
   id: string;
   title: string;
   time: string;
   location: string;
-  category: string;
+  category: EventCategory;
+  categoryLabel: string;
+  iconUrl: string;
   description: string;
   cityId: CityId;
+  duration?: string;
+  highlightBadge?: string;
 }
 
 export interface PerkItem {
@@ -103,6 +109,7 @@ export interface PassportLoyaltyCard {
   tier: string;
   passportNo: string;
   gradient: string;
+  backGradient?: string;
   accentColor: string;
   badgeBg: string;
   badgeText: string;
