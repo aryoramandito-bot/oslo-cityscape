@@ -131,5 +131,43 @@ export const mockEvents: EventItem[] = [
     category: 'Textile Carnival',
     description: 'Spectacular annual street pageant featuring towering wearable art costumes crafted from authentic Javanese batik.',
     cityId: 'solo'
+  },
+
+  // Laweyan Events
+  {
+    id: 'elw1',
+    title: 'Canting & Malam: Traditional Batik Tulis Workshop',
+    time: '09:30 AM - 12:00 PM',
+    location: 'Batik Gunawan Setiawan Workshop',
+    category: 'Craft Masterclass',
+    description: 'Hands-on natural indigo wax-resist dyeing under the tutelage of third-generation master batik artisans.',
+    cityId: 'laweyan'
+  },
+  {
+    id: 'elw2',
+    title: 'Gang Senggol Sunset Heritage Photowalk',
+    time: '04:00 PM - 06:00 PM',
+    location: 'Lorong Gang Senggol & Ndalem Tjokrosoemartan',
+    category: 'Heritage Walk',
+    description: 'Guided walking exploration through fortress-like brick corridors, secret merchant compounds, and Pajang spiritual sanctuaries.',
+    cityId: 'laweyan'
+  },
+  {
+    id: 'elw3',
+    title: 'Syarikat Dagang Islam Historic Commemoration Talk',
+    time: '01:30 PM - 03:30 PM',
+    location: 'Rumah KH Samanhudi & FPKBL Center',
+    category: 'National History',
+    description: 'Curated historical dialogue retracing the 1911 indigenous batik trade guild revolution and early Indonesian merchant society.',
+    cityId: 'laweyan'
+  },
+  {
+    id: 'elw4',
+    title: 'Laweyan Night Market: Apem Mencon & Ledre Tasting',
+    time: '06:30 PM - 09:30 PM',
+    location: 'Sentra FPKBL & Jl. Dr. Radjiman',
+    category: 'Traditional Culinary',
+    description: 'Savor ancestral coal-baked Apem Mencon and freshly crisped banana Ledre while watching live canting demonstrations.',
+    cityId: 'laweyan'
   }
 ];

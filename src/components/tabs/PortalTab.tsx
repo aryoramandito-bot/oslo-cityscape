@@ -17,7 +17,7 @@ interface ChatMessage {
 export default function PortalTab() {
   const { activeCity, setSelectedLandmark, allLandmarks, setActiveTab } = useAppContext();
   const [input, setInput] = useState('');
-  const cityName = activeCity === 'solo' ? 'Solo (Surakarta)' : activeCity === 'bandung' ? 'Bandung' : 'Jakarta';
+  const cityName = activeCity === 'laweyan' ? 'Desa Laweyan' : activeCity === 'solo' ? 'Solo (Surakarta)' : activeCity === 'bandung' ? 'Bandung' : 'Jakarta';
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -30,7 +30,14 @@ export default function PortalTab() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const quickPrompts = activeCity === 'solo'
+  const quickPrompts = activeCity === 'laweyan'
+    ? [
+        'Where can I try traditional Apem Mencon & Ledre?',
+        'Tell me about the history of Lorong Gang Senggol.',
+        'Where can I take a batik tulis workshop in Laweyan?',
+        'Who was Ki Ageng Henis and KH Samanhudi?',
+      ]
+    : activeCity === 'solo'
     ? [
         'Where can I eat authentic Selat Solo?',
         'Tell me about Keraton Surakarta court history.',
@@ -122,7 +129,9 @@ export default function PortalTab() {
           targetId: 's9',
         };
       } else if (q.includes('event') || q.includes('tour') || q.includes('dance')) {
-        reply = activeCity === 'solo'
+        reply = activeCity === 'laweyan'
+          ? 'Upcoming highlight: Canting & Malam traditional batik workshop at Batik Gunawan Setiawan, plus the Gang Senggol sunset heritage photowalk.'
+          : activeCity === 'solo'
           ? 'Upcoming highlight: Royal Mangkunegaran Court Dance under the Pendopo Agung, and SIPA international performances at Benteng Vastenburg.'
           : activeCity === 'bandung'
           ? 'Upcoming highlight: Grand Interactive Angklung Orchestra at Saung Angklung Udjo starts daily at 03:30 PM. Each guest receives a tuned bamboo instrument!'
@@ -130,6 +139,22 @@ export default function PortalTab() {
         action = {
           type: 'VIEW_EVENT',
           label: 'Browse Events Calendar',
+        };
+      } else if (q.includes('gang senggol') || q.includes('lorong') || q.includes('fortress')) {
+        reply =
+          'Lorong Gang Senggol is a historic labyrinth of 3-4 meter high brick fortress walls built by 19th-century wealthy batik merchants (Wong Juragan) for security and privacy.';
+        action = {
+          type: 'NAVIGATE',
+          label: 'View Gang Senggol',
+          targetId: 'lw3',
+        };
+      } else if (q.includes('apem') || q.includes('ledre')) {
+        reply =
+          'Apem Mencon and Ledre Laweyan are centuries-old ancestral confections. Apem Mencon is slow-baked over clay charcoal braziers, while Ledre features crisp rolled banana crepes.';
+        action = {
+          type: 'NAVIGATE',
+          label: 'View Apem Mencon',
+          targetId: 'lw15',
         };
       } else if (q.includes('perk') || q.includes('discount') || q.includes('voucher')) {
         reply =

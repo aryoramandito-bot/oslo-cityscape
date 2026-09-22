@@ -17,12 +17,13 @@ export default function ExploreTab() {
     checkins,
   } = useAppContext();
 
+  const isLaweyan = activeCity === 'laweyan';
   const isSolo = activeCity === 'solo';
   const isBandung = activeCity === 'bandung';
-  const activeColor = isSolo ? 'bg-emerald-600' : isBandung ? 'bg-amber-500' : 'bg-[#ff9898]';
-  const accentTextColor = isSolo ? 'text-emerald-600' : isBandung ? 'text-amber-500' : 'text-[#ff9898]';
-  const nodeName = isSolo ? 'Royal Heritage Node' : isBandung ? 'Highland Node' : 'Capital Node';
-  const discoveryTitle = isSolo ? 'Solo Discovery' : isBandung ? 'Bandung Discovery' : 'Jakarta Discovery';
+  const activeColor = isLaweyan ? 'bg-[#78350f]' : isSolo ? 'bg-emerald-600' : isBandung ? 'bg-amber-500' : 'bg-[#ff9898]';
+  const accentTextColor = isLaweyan ? 'text-[#78350f]' : isSolo ? 'text-emerald-600' : isBandung ? 'text-amber-500' : 'text-[#ff9898]';
+  const nodeName = isLaweyan ? 'Pajang & Batik Merchant Node' : isSolo ? 'Royal Heritage Node' : isBandung ? 'Highland Node' : 'Capital Node';
+  const discoveryTitle = isLaweyan ? 'Laweyan Discovery' : isSolo ? 'Solo Discovery' : isBandung ? 'Bandung Discovery' : 'Jakarta Discovery';
 
   // 1. Strict Category Filtering
   const filteredByCategory = landmarks.filter((item) => {

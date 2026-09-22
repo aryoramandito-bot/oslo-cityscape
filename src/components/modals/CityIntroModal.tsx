@@ -8,8 +8,9 @@ export default function CityIntroModal() {
   if (!activeIntroCity) return null;
 
   const city = activeIntroCity;
-  const isBandung = city === 'bandung';
+  const isLaweyan = city === 'laweyan';
   const isSolo = city === 'solo';
+  const isBandung = city === 'bandung';
 
   const handleClose = () => {
     setActiveIntroCity(null);
@@ -17,32 +18,67 @@ export default function CityIntroModal() {
   };
 
   // Background styling
-  const bgGradient = isSolo
+  const bgGradient = isLaweyan
+    ? 'linear-gradient(135deg, rgba(120,53,15,0.15) 0%, rgba(255,255,255,0.98) 40%, rgba(180,83,9,0.1) 100%)'
+    : isSolo
     ? 'linear-gradient(135deg, rgba(5,150,105,0.15) 0%, rgba(255,255,255,0.98) 40%, rgba(4,120,87,0.1) 100%)'
     : isBandung
     ? 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(255,255,255,0.98) 40%, rgba(245,158,11,0.1) 100%)'
     : 'linear-gradient(135deg, rgba(255,152,152,0.15) 0%, rgba(255,255,255,0.98) 40%, rgba(255,152,152,0.1) 100%)';
 
-  const badgeColor = isSolo ? 'bg-emerald-600 text-white' : isBandung ? 'bg-amber-500 text-white' : 'bg-[#ff9898] text-white';
-  const accentTextColor = isSolo ? 'text-emerald-600' : isBandung ? 'text-amber-500' : 'text-[#ff9898]';
-  const badgeCode = isSolo ? 'SL' : isBandung ? 'BD' : 'JK';
-  const chapterRegion = isSolo ? 'City Chapter · Central Java' : isBandung ? 'City Chapter · West Java' : 'Capital Chapter · DKI Jakarta';
-  const cityName = isSolo ? 'Solo (Surakarta)' : isBandung ? 'Bandung' : 'Jakarta';
-  const tagline = isSolo ? 'The Spirit of Java · Kota Budaya & Batik' : isBandung ? 'Paris Van Java · Kota Kembang' : 'Heart of Nusantara · Big Durian';
+  const badgeColor = isLaweyan
+    ? 'bg-[#78350f] text-amber-100'
+    : isSolo
+    ? 'bg-emerald-600 text-white'
+    : isBandung
+    ? 'bg-amber-500 text-white'
+    : 'bg-[#ff9898] text-white';
 
-  const description = isSolo
+  const accentTextColor = isLaweyan
+    ? 'text-[#78350f]'
+    : isSolo
+    ? 'text-emerald-600'
+    : isBandung
+    ? 'text-amber-500'
+    : 'text-[#ff9898]';
+
+  const badgeCode = isLaweyan ? 'LW' : isSolo ? 'SL' : isBandung ? 'BD' : 'JK';
+  const chapterRegion = isLaweyan
+    ? 'Heritage Chapter · Jawa Tengah'
+    : isSolo
+    ? 'City Chapter · Central Java'
+    : isBandung
+    ? 'City Chapter · West Java'
+    : 'Capital Chapter · DKI Jakarta';
+
+  const cityName = isLaweyan ? 'Desa Laweyan' : isSolo ? 'Solo (Surakarta)' : isBandung ? 'Bandung' : 'Jakarta';
+  const tagline = isLaweyan
+    ? 'Kampung Batik Tertua · Warisan Saudagar Pajang'
+    : isSolo
+    ? 'The Spirit of Java · Kota Budaya & Batik'
+    : isBandung
+    ? 'Paris Van Java · Kota Kembang'
+    : 'Heart of Nusantara · Big Durian';
+
+  const description = isLaweyan
+    ? "Step into Java's oldest autonomous batik quarter — 16th-century Pajang origins, towering fortress walls (*Gang Senggol*), historic Sarekat Dagang Islam movement, master canting studios, and ancestral confections."
+    : isSolo
     ? "Immerse in the cultural heartland of classical Java — sacred royal courts of Kasunanan and Mangkunegaran, historic world-class batik quarters, timeless performing arts, and royal culinary treasures."
     : isBandung
     ? "Discover West Java's cultural capital — Dutch colonial elegance, Sundanese artistry, active volcanoes, world-class pastries, and Indonesia's most beloved street foods."
     : "Explore the bustling Indonesian metropolis — centuries of colonial maritime history, royal Betawi heritage, soaring modern skyscrapers, and vibrant street markets.";
 
-  const stats = isSolo
+  const stats = isLaweyan
+    ? { attractions: 14, culinary: 12, total: 26 }
+    : isSolo
     ? { attractions: 16, culinary: 16, total: 32 }
     : isBandung
     ? { attractions: 17, culinary: 19, total: 36 }
     : { attractions: 19, culinary: 15, total: 34 };
 
-  const buttonClass = isSolo
+  const buttonClass = isLaweyan
+    ? 'bg-[#78350f] hover:bg-amber-900'
+    : isSolo
     ? 'bg-emerald-600 hover:bg-emerald-700'
     : isBandung
     ? 'bg-amber-500 hover:bg-amber-600'
@@ -82,7 +118,25 @@ export default function CityIntroModal() {
 
         {/* Feature Pills */}
         <div className="flex flex-wrap gap-2 justify-center mb-6">
-          {isSolo ? (
+          {isLaweyan ? (
+            <>
+              <span className="px-3 py-1 bg-amber-900/10 border border-amber-800/30 rounded-full text-[10px] font-semibold text-amber-900">
+                🧱 Gang Senggol Alleys
+              </span>
+              <span className="px-3 py-1 bg-amber-900/10 border border-amber-800/30 rounded-full text-[10px] font-semibold text-amber-900">
+                🌿 Pajang 1546 Heritage
+              </span>
+              <span className="px-3 py-1 bg-amber-900/10 border border-amber-800/30 rounded-full text-[10px] font-semibold text-amber-900">
+                🎨 Batik Tulis & Canting
+              </span>
+              <span className="px-3 py-1 bg-amber-900/10 border border-amber-800/30 rounded-full text-[10px] font-semibold text-amber-900">
+                📜 Syarikat Dagang Islam
+              </span>
+              <span className="px-3 py-1 bg-amber-900/10 border border-amber-800/30 rounded-full text-[10px] font-semibold text-amber-900">
+                🥞 Apem Mencon & Ledre
+              </span>
+            </>
+          ) : isSolo ? (
             <>
               <span className="px-3 py-1 bg-emerald-50 border border-emerald-200/60 rounded-full text-[10px] font-semibold text-emerald-700">
                 👑 Royal Palaces
@@ -165,7 +219,7 @@ export default function CityIntroModal() {
           onClick={handleClose}
           className={`w-full py-3.5 rounded-2xl text-white font-outfit font-bold text-xs shadow-lg transition-transform active:scale-98 cursor-pointer ${buttonClass}`}
         >
-          Explore {isSolo ? 'Solo' : isBandung ? 'Bandung' : 'Jakarta'} Chapter →
+          Explore {isLaweyan ? 'Desa Laweyan' : isSolo ? 'Solo' : isBandung ? 'Bandung' : 'Jakarta'} Chapter →
         </button>
 
         <button

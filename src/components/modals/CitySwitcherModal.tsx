@@ -23,6 +23,8 @@ export default function CitySwitcherModal() {
         setActiveIntroCity('bandung');
       } else if (city === 'solo') {
         setActiveIntroCity('solo');
+      } else if (city === 'laweyan') {
+        setActiveIntroCity('laweyan');
       } else {
         triggerConfetti();
       }
@@ -124,6 +126,31 @@ export default function CitySwitcherModal() {
               </div>
             </div>
             {activeCity === 'solo' && <Check className="w-4 h-4 text-emerald-600" />}
+          </div>
+
+          {/* Laweyan Option */}
+          <div
+            onClick={() => handleSelect('laweyan')}
+            className={`p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all ${
+              activeCity === 'laweyan'
+                ? 'border-[#78350f] bg-amber-950/10 shadow-xs'
+                : 'border-gray-200 hover:border-gray-300 bg-white'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#78350f] text-amber-100 flex items-center justify-center font-extrabold text-sm font-outfit shadow-xs">
+                LW
+              </div>
+              <div className="text-left">
+                <span className="text-xs font-bold text-gray-900 font-outfit block">
+                  Desa Laweyan Chapter
+                </span>
+                <span className="text-[10px] text-gray-400 font-mono">
+                  26 Curated Sites · Pajang & Batik Enclave
+                </span>
+              </div>
+            </div>
+            {activeCity === 'laweyan' && <Check className="w-4 h-4 text-[#78350f]" />}
           </div>
         </div>
 

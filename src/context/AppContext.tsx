@@ -3,6 +3,7 @@ import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption
 import { mockLandmarks } from '../data/jakarta';
 import { mockBandungLandmarks } from '../data/bandung';
 import { mockSoloLandmarks } from '../data/solo';
+import { mockLaweyanLandmarks } from '../data/laweyan';
 import { initialUserLedger, interestBadges } from '../data/initialLedger';
 import { Coordinates, CITY_CENTERS, getDistanceInMeters, formatDistance } from '../utils/geo';
 
@@ -97,6 +98,18 @@ const defaultReviews: Record<string, Review[]> = {
   ],
   's20': [
     { id: 'rs4', author: 'Tri H.', rating: 5, date: '2 days ago', comment: 'Warm, melt-in-the-mouth serabi straight from the clay pots. Unmatched authentic taste.' }
+  ],
+  'lw1': [
+    { id: 'rlw1', author: 'Raden Mas H.', rating: 5, date: 'Yesterday', comment: 'Deeply serene and spiritual resting sanctuary. The ancestral Pajang banyan trees exude timeless history.' }
+  ],
+  'lw3': [
+    { id: 'rlw2', author: 'Nadia P.', rating: 5, date: '3 days ago', comment: 'Walking through Gang Senggol between high fortress walls feels like stepping right into the 19th century!' }
+  ],
+  'lw7': [
+    { id: 'rlw3', author: 'Wawan K.', rating: 5, date: 'Today', comment: 'Top-tier canting and natural dye workshop! The master craftsmen patiently explain every single motif.' }
+  ],
+  'lw15': [
+    { id: 'rlw4', author: 'Retno A.', rating: 5, date: '2 days ago', comment: 'Authentic warm Apem Mencon straight off the charcoal hearth. Best traditional sweet treat in Solo.' }
   ]
 };
 
@@ -159,8 +172,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     ? mockBandungLandmarks
     : activeCity === 'solo'
     ? mockSoloLandmarks
+    : activeCity === 'laweyan'
+    ? mockLaweyanLandmarks
     : mockLandmarks;
-  const allLandmarks = [...mockLandmarks, ...mockBandungLandmarks, ...mockSoloLandmarks];
+  const allLandmarks = [...mockLandmarks, ...mockBandungLandmarks, ...mockSoloLandmarks, ...mockLaweyanLandmarks];
 
   // Geospatial state & Geolocation watcher
   const [userLocation, setUserLocation] = useState<Coordinates | null>(() => {

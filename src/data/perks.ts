@@ -104,5 +104,40 @@ export const mockPerks: PerkItem[] = [
     description: 'Complimentary priority guided entry to the historic master vinyl vaults and analog mastering galleries.',
     code: 'LOKANANTA-VIP',
     tags: ['Museum', 'Music']
+  },
+
+  // Laweyan Perks
+  {
+    id: 'plw1',
+    title: '20% Off Hand-Drawn Batik Tulis Scarves',
+    merchant: 'Batik Gunawan Setiawan',
+    discount: '20% OFF',
+    validUntil: 'Valid Everyday',
+    cityId: 'laweyan',
+    description: 'Exclusive 20% savings on master-crafted natural dye silk and primissima cotton batik scarves.',
+    code: 'LAWEYAN-BATIK20',
+    tags: ['Craft', 'Exclusive']
+  },
+  {
+    id: 'plw2',
+    title: 'Free Box of Fresh Charcoal Apem Mencon',
+    merchant: 'Apem Mencon Ny. Pur',
+    discount: 'GIFT BOX',
+    validUntil: 'Min. Purchase 75k',
+    cityId: 'laweyan',
+    description: 'Complimentary box of 5 traditional warm palm sugar apem pancakes baked over clay hearths.',
+    code: 'APEM-LAWEYAN',
+    tags: ['Ancestral Snack', 'Oleh-Oleh']
+  },
+  {
+    id: 'plw3',
+    title: 'Complimentary Traditional Javanese Herbal Tea Set',
+    merchant: 'Roemahkoe Heritage Hotel & Resto',
+    discount: 'FREE SET',
+    validUntil: 'Daily 14:00 - 18:00',
+    cityId: 'laweyan',
+    description: 'Complimentary afternoon Wedang Uwuh and traditional savory jadah snacks in the antique merchant courtyard.',
+    code: 'ROEMAHKOE-TEA',
+    tags: ['Beverage', 'Heritage']
   }
 ];

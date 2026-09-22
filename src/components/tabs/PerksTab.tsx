@@ -27,7 +27,7 @@ export default function PerksTab() {
             Exclusive Benefits
           </span>
           <h2 className="text-base font-bold text-gray-900 font-outfit mt-0.5">
-            {activeCity === 'solo' ? 'Solo Heritage & Partner Perks' : activeCity === 'bandung' ? 'Bandung Partner Discounts' : 'Jakarta Explorer Perks'}
+            {activeCity === 'laweyan' ? 'Laweyan Merchant & Artisan Perks' : activeCity === 'solo' ? 'Solo Heritage & Partner Perks' : activeCity === 'bandung' ? 'Bandung Partner Discounts' : 'Jakarta Explorer Perks'}
           </h2>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Show these vouchers at merchant counters to redeem

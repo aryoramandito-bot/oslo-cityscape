@@ -53,7 +53,7 @@ export default function RealMap({
     if (!mapInstanceRef.current) {
       const map = L.map(mapContainerRef.current, {
         center: initialCenter,
-        zoom: targetLandmark ? 15 : 13,
+        zoom: targetLandmark ? 15 : (activeCity === 'laweyan' ? 15 : 13),
         zoomControl: false,
         attributionControl: true,
       });
@@ -92,7 +92,8 @@ export default function RealMap({
         duration: 1.2,
       });
     } else {
-      mapInstanceRef.current.flyTo([center.lat, center.lng], 13, {
+      const defaultZoom = activeCity === 'laweyan' ? 15 : 13;
+      mapInstanceRef.current.flyTo([center.lat, center.lng], defaultZoom, {
         duration: 1.2,
       });
     }

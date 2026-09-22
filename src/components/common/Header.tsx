@@ -4,12 +4,13 @@ import { ChevronDown, Sparkles, MapPin } from 'lucide-react';
 export default function Header() {
   const { activeCity, setIsCitySwitcherOpen, setIsRadarMapOpen, userProfile } = useAppContext();
 
+  const isLaweyan = activeCity === 'laweyan';
   const isSolo = activeCity === 'solo';
   const isBandung = activeCity === 'bandung';
-  const badgeColor = isSolo ? 'bg-emerald-600' : isBandung ? 'bg-amber-500' : 'bg-[#ff9898]';
-  const badgeCode = isSolo ? 'SL' : isBandung ? 'BD' : 'JK';
-  const chapterName = isSolo ? 'Solo Chapter' : isBandung ? 'Bandung Chapter' : 'Jakarta Chapter';
-  const siteCountText = isSolo ? '32 Curated Sites' : isBandung ? '36 Curated Sites' : '34 Curated Sites';
+  const badgeColor = isLaweyan ? 'bg-[#78350f] text-amber-100' : isSolo ? 'bg-emerald-600 text-white' : isBandung ? 'bg-amber-500 text-white' : 'bg-[#ff9898] text-white';
+  const badgeCode = isLaweyan ? 'LW' : isSolo ? 'SL' : isBandung ? 'BD' : 'JK';
+  const chapterName = isLaweyan ? 'Desa Laweyan Chapter' : isSolo ? 'Solo Chapter' : isBandung ? 'Bandung Chapter' : 'Jakarta Chapter';
+  const siteCountText = isLaweyan ? '26 Curated Sites' : isSolo ? '32 Curated Sites' : isBandung ? '36 Curated Sites' : '34 Curated Sites';
 
   return (
     <header className="h-16 px-5 border-b border-gray-200/60 bg-[#f9f8f6]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
