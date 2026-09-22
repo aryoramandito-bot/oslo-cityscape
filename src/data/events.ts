@@ -1,3 +1,7 @@
+/**
+ * Event Dataset & Category Taxonomy for Oslo CityScape
+ * Ref: 1c8afa7b-779d-46c6-9b24-313e34c497b4
+ */
 import { EventItem, EventCategory } from '../types';
 
 export interface CategoryFilterTab {
