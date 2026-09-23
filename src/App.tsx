@@ -14,10 +14,12 @@ import EventDetailModal from './components/modals/EventDetailModal';
 import SiteStatementModal from './components/modals/SiteStatementModal';
 import OnboardingModal from './components/modals/OnboardingModal';
 import LogoutModal from './components/modals/LogoutModal';
+import AccountSwitcherModal from './components/modals/AccountSwitcherModal';
+import LoginPage from './components/auth/LoginPage';
 import PointsToast from './components/common/PointsToast';
 
 function MainLayout() {
-  const { activeTab, isLoginModalOpen, setIsLoginModalOpen } = useAppContext();
+  const { activeTab, isLoginModalOpen, setIsLoginModalOpen, isLoginPageOpen, setIsLoginPageOpen } = useAppContext();
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -59,7 +61,10 @@ function MainLayout() {
       <LandmarkDetailModal />
       <EventDetailModal />
       <SiteStatementModal />
-      <LogoutModal />
+      <AccountSwitcherModal />
+      {isLoginPageOpen && (
+        <LoginPage onClose={() => setIsLoginPageOpen(false)} />
+      )}
       {isLoginModalOpen && (
         <OnboardingModal onComplete={() => setIsLoginModalOpen(false)} />
       )}

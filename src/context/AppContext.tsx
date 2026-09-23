@@ -1,11 +1,23 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useOptimistic, useTransition } from 'react';
-import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption, EventItem } from '../types';
+import { createContext, useContext, useState, useEffect, ReactNode, useOptimistic, useTransition, useCallback } from 'react';
+import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption, EventItem, UserAccount, UserDataVault } from '../types';
 import { mockLandmarks } from '../data/jakarta';
 import { mockBandungLandmarks } from '../data/bandung';
 import { mockSoloLandmarks } from '../data/solo';
 import { mockLaweyanLandmarks } from '../data/laweyan';
-import { initialUserLedger, interestBadges } from '../data/initialLedger';
+import { interestBadges } from '../data/initialLedger';
 import { Coordinates, CITY_CENTERS, getDistanceInMeters, formatDistance } from '../utils/geo';
+import {
+  initializeUserStore,
+  getRegisteredAccounts,
+  getActiveAccountId,
+  setActiveAccountId,
+  getAccountById,
+  getUserVault,
+  saveUserVault,
+  registerUserAccount,
+  removeUserAccount,
+} from '../utils/userStore';
+import { GUEST_USER } from '../data/seedUsers';
 
 export interface PointsToastData {
   message: string;
@@ -30,6 +42,8 @@ interface AppContextType {
   eventReminders: string[];
   toggleEventReminder: (id: string) => void;
   getEventDistance: (event: EventItem) => string | null;
+  redeemedPerks: string[];
+  redeemPerk: (perkId: string) => void;
   isCitySwitcherOpen: boolean;
   setIsCitySwitcherOpen: (open: boolean) => void;
   isRadarMapOpen: boolean;
@@ -59,23 +73,24 @@ interface AppContextType {
   setSelectedStatementSite: (site: string | null) => void;
   pointsToast: PointsToastData | null;
   setPointsToast: (toast: PointsToastData | null) => void;
-  // Auth & Session
+  // Multi-User & Auth Session
+  currentAccount: UserAccount;
+  registeredAccounts: UserAccount[];
+  switchUser: (userId: string) => void;
+  registerUser: (account: UserAccount, initialVault?: Partial<UserDataVault>) => void;
+  loginWithEmail: (email: string, password?: string) => Promise<boolean>;
+  loginAsGuest: () => void;
+  removeAccount: (userId: string) => void;
+  isLoginPageOpen: boolean;
+  setIsLoginPageOpen: (open: boolean) => void;
+  isAccountSwitcherOpen: boolean;
+  setIsAccountSwitcherOpen: (open: boolean) => void;
   isLogoutModalOpen: boolean;
   setIsLogoutModalOpen: (open: boolean) => void;
   isLoginModalOpen: boolean;
   setIsLoginModalOpen: (open: boolean) => void;
   logout: () => void;
 }
-
-const defaultUserProfile: UserProfile = {
-  providerUid: 'voyage_explorer_882910',
-  name: 'Astrid Widayani',
-  nationality: 'Indonesian (WNI)',
-  region: 'Surakarta / Jawa Tengah',
-  age: '35-49',
-  gender: 'Female',
-  isVerified: true
-};
 
 const defaultReviews: Record<string, Review[]> = {
   '1': [
@@ -127,34 +142,26 @@ const defaultReviews: Record<string, Review[]> = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  // Initialize multi-user store on boot
+  initializeUserStore();
+
+  const [activeUserId, setActiveUserId] = useState<string>(() => getActiveAccountId());
+  const [registeredAccounts, setRegisteredAccounts] = useState<UserAccount[]>(() => getRegisteredAccounts());
+  const [currentAccount, setCurrentAccount] = useState<UserAccount>(() => getAccountById(activeUserId));
+
+  // Hydrate initial vault for active user
+  const initialVault = getUserVault(activeUserId);
+
   const [activeCity, setActiveCityState] = useState<CityId>(() => {
-    return (localStorage.getItem('oslo_active_city') as CityId) || 'jakarta';
+    return initialVault.activeCity || (localStorage.getItem('oslo_active_city') as CityId) || 'solo';
   });
-  
-  // Landing page defaults to explore
+
   const [activeTab, setActiveTab] = useState<TabType>('explore');
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
-  const [eventReminders, setEventReminders] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('oslo_event_reminders');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [eventReminders, setEventReminders] = useState<string[]>(() => initialVault.eventReminders || []);
+  const [redeemedPerks, setRedeemedPerks] = useState<string[]>(() => initialVault.redeemedPerks || []);
 
-  const toggleEventReminder = (id: string) => {
-    setEventReminders((prev) => {
-      const next = prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id];
-      try {
-        localStorage.setItem('oslo_event_reminders', JSON.stringify(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
-  };
   const [isCitySwitcherOpen, setIsCitySwitcherOpen] = useState(false);
   const [isRadarMapOpen, setIsRadarMapOpen] = useState(false);
   const [activeIntroCity, setActiveIntroCity] = useState<CityId | null>(null);
@@ -163,59 +170,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [sortOption, setSortOption] = useState<SortOption>('default');
 
   // Loyalty points & ledger
-  const [loyaltyPoints, setLoyaltyPoints] = useState<number>(() => {
-    const saved = localStorage.getItem('oslo_loyalty_points');
-    return saved ? parseInt(saved, 10) : 6650;
-  });
-
-  const [userLedger, setUserLedger] = useState<LedgerEntry[]>(() => {
-    const saved = localStorage.getItem('oslo_user_ledger');
-    return saved ? JSON.parse(saved) : initialUserLedger;
-  });
+  const [loyaltyPoints, setLoyaltyPoints] = useState<number>(() => initialVault.loyaltyPoints ?? 6650);
+  const [userLedger, setUserLedger] = useState<LedgerEntry[]>(() => initialVault.userLedger || []);
 
   const [selectedStatementSite, setSelectedStatementSite] = useState<string | null>(null);
   const [pointsToast, setPointsToast] = useState<PointsToastData | null>(null);
 
-  // Auth & Session state
+  // Auth & Multi-User Modal/Overlay States
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isAccountSwitcherOpen, setIsAccountSwitcherOpen] = useState(false);
+  const [isLoginPageOpen, setIsLoginPageOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(() => {
     return !localStorage.getItem('oslo_onboarding_completed');
   });
 
-  const [userProfile, setUserProfile] = useState<UserProfile>(() => {
-    const saved = localStorage.getItem('oslo_user_profile');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.name === 'Aryo Ramandito') {
-          return {
-            ...defaultUserProfile,
-            ...parsed,
-            name: 'Astrid Widayani',
-            gender: 'Female',
-            region: 'Surakarta / Jawa Tengah',
-          };
-        }
-        return parsed;
-      } catch (e) {
-        return defaultUserProfile;
-      }
-    }
-    return defaultUserProfile;
-  });
+  const [userProfile, setUserProfileState] = useState<UserProfile>(() => currentAccount.profile);
 
-  const logout = () => {
-    localStorage.removeItem('oslo_onboarding_completed');
-    localStorage.removeItem('oslo_user_profile');
-    setUserProfile(defaultUserProfile);
-    setIsLogoutModalOpen(false);
-    setIsLoginModalOpen(true);
+  const setUserProfile = (newProfile: UserProfile) => {
+    setUserProfileState(newProfile);
+    setCurrentAccount((prev) => {
+      const updated = { ...prev, profile: newProfile };
+      registerUserAccount(updated);
+      return updated;
+    });
   };
 
-  const [checkins, setCheckins] = useState<string[]>(() => {
-    const saved = localStorage.getItem('oslo_checkins');
-    return saved ? JSON.parse(saved) : ['1', '2', '31']; // Original checkins from prototype
-  });
+  const [checkins, setCheckins] = useState<string[]>(() => initialVault.checkins || ['s1', 's2', 's3']);
 
   const [reviews, setReviews] = useState<Record<string, Review[]>>(() => {
     const saved = localStorage.getItem('oslo_reviews');
@@ -228,6 +208,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     startTransition(() => {
       setActiveCityState(city);
       localStorage.setItem('oslo_active_city', city);
+      // Also update active user vault
+      saveUserVault(activeUserId, {
+        loyaltyPoints,
+        userLedger,
+        checkins,
+        eventReminders,
+        redeemedPerks,
+        activeCity: city,
+      });
     });
   };
 
@@ -284,6 +273,177 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return formatDistance(meters);
   };
 
+  // Helper to persist current vault when user-scoped values change
+  const persistCurrentVault = useCallback(
+    (overrides?: Partial<UserDataVault>) => {
+      saveUserVault(activeUserId, {
+        loyaltyPoints,
+        userLedger,
+        checkins,
+        eventReminders,
+        redeemedPerks,
+        activeCity,
+        ...overrides,
+      });
+    },
+    [activeUserId, loyaltyPoints, userLedger, checkins, eventReminders, redeemedPerks, activeCity]
+  );
+
+  // Auto-sync active vault when state modifies
+  useEffect(() => {
+    if (activeUserId) {
+      saveUserVault(activeUserId, {
+        loyaltyPoints,
+        userLedger,
+        checkins,
+        eventReminders,
+        redeemedPerks,
+        activeCity,
+      });
+    }
+  }, [activeUserId, loyaltyPoints, userLedger, checkins, eventReminders, redeemedPerks, activeCity]);
+
+  // Multi-User Switching
+  const switchUser = useCallback((newUserId: string) => {
+    // 1. Flush current state
+    saveUserVault(activeUserId, {
+      loyaltyPoints,
+      userLedger,
+      checkins,
+      eventReminders,
+      redeemedPerks,
+      activeCity,
+    });
+
+    // 2. Set new active user ID
+    setActiveAccountId(newUserId);
+    setActiveUserId(newUserId);
+
+    // 3. Hydrate new account and vault
+    const targetAccount = getAccountById(newUserId);
+    const targetVault = getUserVault(newUserId);
+
+    setCurrentAccount(targetAccount);
+    setUserProfileState(targetAccount.profile);
+    setLoyaltyPoints(targetVault.loyaltyPoints);
+    setUserLedger(targetVault.userLedger || []);
+    setCheckins(targetVault.checkins || []);
+    setEventReminders(targetVault.eventReminders || []);
+    setRedeemedPerks(targetVault.redeemedPerks || []);
+
+    if (targetVault.activeCity) {
+      setActiveCityState(targetVault.activeCity);
+    }
+
+    setRegisteredAccounts(getRegisteredAccounts());
+    setIsAccountSwitcherOpen(false);
+    setIsLoginPageOpen(false);
+    setIsLogoutModalOpen(false);
+
+    // Fire celebration toast for account switch
+    setPointsToast({
+      message: `Active Explorer: ${targetAccount.profile.name}`,
+      icon: '👤',
+    });
+  }, [activeUserId, loyaltyPoints, userLedger, checkins, eventReminders, redeemedPerks, activeCity]);
+
+  // Register New User
+  const registerUser = useCallback((newAccount: UserAccount, customVault?: Partial<UserDataVault>) => {
+    registerUserAccount(newAccount, customVault);
+    const updatedAccounts = getRegisteredAccounts();
+    setRegisteredAccounts(updatedAccounts);
+    switchUser(newAccount.id);
+  }, [switchUser]);
+
+  // Login With Email simulation
+  const loginWithEmail = useCallback(async (email: string, _password?: string): Promise<boolean> => {
+    const accounts = getRegisteredAccounts();
+    const match = accounts.find((a) => a.email.toLowerCase() === email.trim().toLowerCase());
+    if (match) {
+      switchUser(match.id);
+      return true;
+    }
+    // If not found, create a new explorer profile on the fly
+    const namePart = email.split('@')[0] || 'Explorer';
+    const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+    const newAcc: UserAccount = {
+      id: 'usr_' + Date.now(),
+      email: email.trim(),
+      profile: {
+        providerUid: 'usr_' + Date.now(),
+        name: formattedName,
+        nationality: 'Indonesian (WNI)',
+        region: 'Jakarta Capital Region',
+        age: '25-34',
+        gender: 'Unspecified',
+        isVerified: true,
+        email: email.trim(),
+        avatarColor: 'from-[#d85d5d] to-[#c64f4f]',
+      },
+      role: 'Verified Explorer',
+      createdAt: new Date().toISOString(),
+      lastActiveAt: 'Just now',
+      isGuest: false,
+    };
+    registerUser(newAcc);
+    return true;
+  }, [registerUser, switchUser]);
+
+  // Login As Guest
+  const loginAsGuest = useCallback(() => {
+    setActiveAccountId(GUEST_USER.account.id);
+    setActiveUserId(GUEST_USER.account.id);
+    setCurrentAccount(GUEST_USER.account);
+    setUserProfileState(GUEST_USER.account.profile);
+    setLoyaltyPoints(GUEST_USER.vault.loyaltyPoints);
+    setUserLedger(GUEST_USER.vault.userLedger);
+    setCheckins(GUEST_USER.vault.checkins);
+    setEventReminders(GUEST_USER.vault.eventReminders);
+    setRedeemedPerks(GUEST_USER.vault.redeemedPerks);
+    setActiveCityState(GUEST_USER.vault.activeCity);
+
+    setIsLoginPageOpen(false);
+    setIsAccountSwitcherOpen(false);
+    setPointsToast({
+      message: 'Browsing in Anonymous Guest Mode',
+      icon: '🧭',
+    });
+  }, []);
+
+  // Remove Account
+  const removeAccount = useCallback((userId: string) => {
+    removeUserAccount(userId);
+    const remaining = getRegisteredAccounts();
+    setRegisteredAccounts(remaining);
+    if (activeUserId === userId) {
+      const nextId = remaining.length > 0 ? remaining[0].id : 'usr_astrid';
+      switchUser(nextId);
+    }
+  }, [activeUserId, switchUser]);
+
+  const logout = () => {
+    setIsAccountSwitcherOpen(false);
+    setIsLogoutModalOpen(false);
+    setIsLoginPageOpen(true);
+  };
+
+  const toggleEventReminder = (id: string) => {
+    setEventReminders((prev) => {
+      const next = prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id];
+      persistCurrentVault({ eventReminders: next });
+      return next;
+    });
+  };
+
+  const redeemPerk = (perkId: string) => {
+    setRedeemedPerks((prev) => {
+      if (prev.includes(perkId)) return prev;
+      const next = [...prev, perkId];
+      persistCurrentVault({ redeemedPerks: next });
+      return next;
+    });
+  };
+
   // Helper to award points and check badges
   const rewardPoints = (pts: number, activityName: string, icon: string = '⭐') => {
     const todayFormatted = new Date().toLocaleDateString('en-GB', {
@@ -298,6 +458,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ? 'Check-In'
         : activityName.includes('Review')
         ? 'Review'
+        : activityName.includes('Redeem')
+        ? 'Voucher Redeemed'
         : 'Activity',
       spot: activityName,
       pts,
@@ -307,7 +469,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     setLoyaltyPoints(prev => {
       const next = prev + pts;
-      localStorage.setItem('oslo_loyalty_points', next.toString());
       return next;
     });
 
@@ -345,7 +506,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
       });
 
-      localStorage.setItem('oslo_user_ledger', JSON.stringify(nextLedger));
       return nextLedger;
     });
 
@@ -374,7 +534,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setOptimisticCheckin(id);
     setCheckins(prev => {
       const updated = prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id];
-      localStorage.setItem('oslo_checkins', JSON.stringify(updated));
+      persistCurrentVault({ checkins: updated });
       return updated;
     });
 
@@ -408,10 +568,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem('oslo_user_profile', JSON.stringify(userProfile));
-  }, [userProfile]);
-
   return (
     <AppContext.Provider
       value={{
@@ -432,6 +588,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         eventReminders,
         toggleEventReminder,
         getEventDistance,
+        redeemedPerks,
+        redeemPerk,
         isCitySwitcherOpen,
         setIsCitySwitcherOpen,
         isRadarMapOpen,
@@ -459,6 +617,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setSelectedStatementSite,
         pointsToast,
         setPointsToast,
+        currentAccount,
+        registeredAccounts,
+        switchUser,
+        registerUser,
+        loginWithEmail,
+        loginAsGuest,
+        removeAccount,
+        isLoginPageOpen,
+        setIsLoginPageOpen,
+        isAccountSwitcherOpen,
+        setIsAccountSwitcherOpen,
         isLogoutModalOpen,
         setIsLogoutModalOpen,
         isLoginModalOpen,

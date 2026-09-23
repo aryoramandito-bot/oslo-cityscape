@@ -6,33 +6,16 @@ import { PerkItem } from '../../types';
 import RedeemVoucherModal from '../modals/RedeemVoucherModal';
 
 export default function PerksTab() {
-  const { activeCity, rewardPoints } = useAppContext();
+  const { activeCity, rewardPoints, redeemedPerks, redeemPerk } = useAppContext();
   const [selectedPerk, setSelectedPerk] = useState<PerkItem | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-  const [redeemedPerks, setRedeemedPerks] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('oslo_redeemed_perks');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
 
   const cityPerks = useMemo(() => {
     return mockPerks.filter((p) => p.cityId === activeCity);
   }, [activeCity]);
 
   const handleRedeemSuccess = (perkId: string) => {
-    setRedeemedPerks((prev) => {
-      if (prev.includes(perkId)) return prev;
-      const next = [...prev, perkId];
-      try {
-        localStorage.setItem('oslo_redeemed_perks', JSON.stringify(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
+    redeemPerk(perkId);
 
     const perk = mockPerks.find((p) => p.id === perkId);
     if (perk) {

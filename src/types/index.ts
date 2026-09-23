@@ -81,7 +81,31 @@ export interface UserProfile {
   age: string;
   gender: string;
   isVerified: boolean;
+  email?: string;
+  bio?: string;
+  avatarColor?: string;
 }
+
+export interface UserAccount {
+  id: string;
+  profile: UserProfile;
+  email: string;
+  role?: string;
+  createdAt: string;
+  lastActiveAt: string;
+  isGuest?: boolean;
+}
+
+export interface UserDataVault {
+  loyaltyPoints: number;
+  userLedger: LedgerEntry[];
+  checkins: string[];
+  eventReminders: string[];
+  redeemedPerks: string[];
+  activeCity: CityId;
+}
+
+export type AuthMode = 'login' | 'register' | 'switch' | 'guest';
 
 export type TabType = 'explore' | 'events' | 'vault' | 'perks' | 'portal';
 

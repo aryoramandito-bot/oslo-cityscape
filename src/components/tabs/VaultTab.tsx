@@ -10,7 +10,8 @@ import {
   ShieldCheck,
   CheckCircle2,
   Copy,
-  Check
+  Check,
+  UserPlus
 } from 'lucide-react';
 import PassportCardDeck from '../vault/PassportCardDeck';
 import { useState } from 'react';
@@ -18,12 +19,13 @@ import { useState } from 'react';
 export default function VaultTab() {
   const {
     userProfile,
+    currentAccount,
     checkins,
     allLandmarks,
     loyaltyPoints,
     userLedger,
     setSelectedStatementSite,
-    setIsLogoutModalOpen,
+    setIsAccountSwitcherOpen,
   } = useAppContext();
 
   const [copiedUid, setCopiedUid] = useState(false);
@@ -301,11 +303,12 @@ export default function VaultTab() {
 
         <button
           type="button"
-          onClick={() => setIsLogoutModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-stone-600 transition-all text-xs font-outfit font-bold cursor-pointer shrink-0 ml-2 active:scale-95"
+          onClick={() => setIsAccountSwitcherOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-[#fff1f1] hover:text-[#d85d5d] hover:border-[#fecaca] text-stone-600 transition-all text-xs font-outfit font-bold cursor-pointer shrink-0 ml-2 active:scale-95"
+          title="Switch explorer accounts or sign out"
         >
-          <LogOut className="w-3.5 h-3.5" />
-          <span>Session</span>
+          <UserPlus className="w-3.5 h-3.5" />
+          <span>Accounts</span>
         </button>
       </div>
     </div>
