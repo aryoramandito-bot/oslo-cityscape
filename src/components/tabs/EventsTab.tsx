@@ -53,61 +53,17 @@ export default function EventsTab() {
     }
   };
 
-  // Harmonized warm category tokens (subtle tints, no neon yellow/stark black)
-  const getCategoryTheme = (category?: EventCategory) => {
-    switch (category) {
-      case 'workshop':
-        return {
-          textAccent: 'text-[#d85d5d]',
-          badgeBg: 'bg-[#fff1f1]',
-          badgeBorder: 'border-[#fecaca]',
-          badgeText: 'text-[#d85d5d]',
-          emblemBg: 'from-[#fff1f1] to-stone-50',
-          emblemBorder: 'border-[#fecaca]',
-          bgGlow: 'bg-[#ff9898]/15',
-        };
-      case 'walking':
-        return {
-          textAccent: 'text-emerald-700',
-          badgeBg: 'bg-emerald-50',
-          badgeBorder: 'border-emerald-200',
-          badgeText: 'text-emerald-800',
-          emblemBg: 'from-emerald-50 to-stone-50',
-          emblemBorder: 'border-emerald-200',
-          bgGlow: 'bg-emerald-400/10',
-        };
-      case 'culinary':
-        return {
-          textAccent: 'text-stone-800',
-          badgeBg: 'bg-stone-100',
-          badgeBorder: 'border-stone-200',
-          badgeText: 'text-stone-800',
-          emblemBg: 'from-stone-100 to-stone-50',
-          emblemBorder: 'border-stone-200',
-          bgGlow: 'bg-stone-300/20',
-        };
-      case 'performance':
-        return {
-          textAccent: 'text-[#d85d5d]',
-          badgeBg: 'bg-[#fff1f1]',
-          badgeBorder: 'border-[#fecaca]',
-          badgeText: 'text-[#d85d5d]',
-          emblemBg: 'from-[#fff1f1] to-stone-50',
-          emblemBorder: 'border-[#fecaca]',
-          bgGlow: 'bg-[#ff9898]/15',
-        };
-      case 'festival':
-      default:
-        return {
-          textAccent: 'text-[#d85d5d]',
-          badgeBg: 'bg-[#fff1f1]',
-          badgeBorder: 'border-[#fecaca]',
-          badgeText: 'text-[#d85d5d]',
-          emblemBg: 'from-[#fff1f1] to-stone-50',
-          emblemBorder: 'border-[#fecaca]',
-          bgGlow: 'bg-[#ff9898]/15',
-        };
-    }
+  // Unified Oslo Color Registry category tokens (clean, neutral, no clashing colors)
+  const getCategoryTheme = (_category?: EventCategory) => {
+    return {
+      textAccent: 'text-[#d85d5d]',
+      badgeBg: 'bg-[#fff1f1]',
+      badgeBorder: 'border-[#fecaca]',
+      badgeText: 'text-[#d85d5d]',
+      emblemBg: 'from-stone-50 to-white',
+      emblemBorder: 'border-stone-200/80',
+      bgGlow: 'bg-[#ff9898]/10',
+    };
   };
 
   return (
@@ -160,7 +116,9 @@ export default function EventsTab() {
                 <img 
                   src={tab.iconUrl} 
                   alt={tab.label} 
-                  className="w-4 h-4 object-contain shrink-0" 
+                  className={`w-4 h-4 object-contain shrink-0 transition-all ${
+                    isActive ? 'brightness-0 invert' : 'opacity-80'
+                  }`} 
                 />
               )}
               <span className="tracking-tight">{tab.label}</span>
@@ -233,11 +191,11 @@ export default function EventsTab() {
                   {/* 2. HERO BLOCK: VECTOR JEWEL + MASTHEAD */}
                   <div className="flex items-start gap-3.5 relative z-10">
                     {/* Category Vector Jewel */}
-                    <div className={`w-12 h-12 rounded-2xl p-2 bg-gradient-to-br ${theme.emblemBg} border ${theme.emblemBorder} flex items-center justify-center shrink-0 shadow-2xs relative overflow-hidden group-hover:scale-105 transition-transform duration-500`}>
+                    <div className="w-12 h-12 rounded-2xl p-2.5 bg-stone-50/90 backdrop-blur-md border border-stone-200/80 flex items-center justify-center shrink-0 shadow-2xs relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                       <img
                         src={event.iconUrl}
                         alt={event.categoryLabel}
-                        className="w-full h-full object-contain drop-shadow-2xs"
+                        className="w-full h-full object-contain"
                       />
                     </div>
 

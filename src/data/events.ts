@@ -12,36 +12,41 @@ export interface CategoryFilterTab {
 }
 
 export const EVENT_CATEGORY_TABS: CategoryFilterTab[] = [
-  { key: 'all', label: 'All Schedule' },
+  { 
+    key: 'all', 
+    label: 'All Schedule',
+    iconUrl: '/assets/categories/category-all.png',
+    badgeColor: 'bg-stone-100 text-stone-800 border-stone-200'
+  },
   { 
     key: 'workshop', 
     label: 'Hands-On Experience', 
     iconUrl: '/assets/categories/category-workshop.png',
-    badgeColor: 'bg-amber-50 text-amber-800 border-amber-200'
+    badgeColor: 'bg-stone-100 text-stone-800 border-stone-200'
   },
   { 
     key: 'walking', 
     label: 'Walking Tours', 
     iconUrl: '/assets/categories/category-walking.png',
-    badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-200'
+    badgeColor: 'bg-stone-100 text-stone-800 border-stone-200'
   },
   { 
     key: 'culinary', 
     label: 'Food & Tastings', 
     iconUrl: '/assets/categories/category-culinary.png',
-    badgeColor: 'bg-orange-50 text-orange-800 border-orange-200'
+    badgeColor: 'bg-stone-100 text-stone-800 border-stone-200'
   },
   { 
     key: 'performance', 
     label: 'Shows & Arts', 
     iconUrl: '/assets/categories/category-performance.png',
-    badgeColor: 'bg-purple-50 text-purple-800 border-purple-200'
+    badgeColor: 'bg-stone-100 text-stone-800 border-stone-200'
   },
   { 
     key: 'festival', 
     label: 'Festivals', 
     iconUrl: '/assets/categories/category-festival.png',
-    badgeColor: 'bg-rose-50 text-rose-800 border-rose-200'
+    badgeColor: 'bg-stone-100 text-stone-800 border-stone-200'
   },
 ];
 

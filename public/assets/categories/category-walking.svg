@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <!-- Outer Precision Compass Dial -->
+    <circle cx="256" cy="256" r="210" fill="none" stroke="#292524" stroke-width="20"/>
+    <circle cx="256" cy="256" r="185" fill="none" stroke="#e7e5e4" stroke-width="8"/>
+    <!-- Compass Cardinal Ticks -->
+    <line x1="256" y1="56" x2="256" y2="82" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <line x1="256" y1="430" x2="256" y2="456" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <line x1="56" y1="256" x2="82" y2="256" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <line x1="430" y1="256" x2="456" y2="256" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <!-- Cardinal Labels (Subtle) -->
+    <circle cx="256" cy="100" r="6" fill="#d85d5d"/>
+    <!-- Diagonal Subtle Points -->
+    <line x1="120" y1="120" x2="135" y2="135" stroke="#a8a29e" stroke-width="10" stroke-linecap="round"/>
+    <line x1="392" y1="120" x2="377" y2="135" stroke="#a8a29e" stroke-width="10" stroke-linecap="round"/>
+    <line x1="120" y1="392" x2="135" y2="377" stroke="#a8a29e" stroke-width="10" stroke-linecap="round"/>
+    <line x1="392" y1="392" x2="377" y2="377" stroke="#a8a29e" stroke-width="10" stroke-linecap="round"/>
+    <!-- Dynamic Explorer Compass Needle -->
+    <!-- North Pointer (Oslo Rose) -->
+    <polygon points="256,120 286,256 256,236" fill="#d85d5d"/>
+    <polygon points="256,120 226,256 256,236" fill="#c64f4f"/>
+    <!-- South Pointer (Neutral Charcoal) -->
+    <polygon points="256,392 286,256 256,276" fill="#292524"/>
+    <polygon points="256,392 226,256 256,276" fill="#44403c"/>
+    <!-- Center Pivot Jewel -->
+    <circle cx="256" cy="256" r="22" fill="#ffffff" stroke="#292524" stroke-width="12"/>
+    <circle cx="256" cy="256" r="8" fill="#d85d5d"/>
+    <!-- Winding Trail Footpath Path -->
+    <path d="M160 370 Q 200 420 240 400 T 320 380" fill="none" stroke="#78716c" stroke-width="12" stroke-linecap="round" stroke-dasharray="10 14"/>
+  </svg>

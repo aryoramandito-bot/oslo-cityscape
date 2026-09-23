@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <!-- Festival Bunting Ribbon -->
+    <path d="M70 140 Q 256 190 442 140" fill="none" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <!-- Triangle Bunting Flags -->
+    <polygon points="120,152 155,210 170,163" fill="#d85d5d"/>
+    <polygon points="195,168 230,225 245,173" fill="#78716c"/>
+    <polygon points="270,173 305,225 320,168" fill="#292524"/>
+    <polygon points="345,163 360,210 395,152" fill="#d85d5d"/>
+    <!-- Traditional Celebration Lantern / Pavilion -->
+    <!-- Lantern Roof Canopy -->
+    <path d="M190 250 L256 200 L322 250 Z" fill="#292524" stroke="#292524" stroke-width="18" stroke-linejoin="round"/>
+    <line x1="256" y1="170" x2="256" y2="200" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <!-- Roof finial -->
+    <circle cx="256" cy="165" r="10" fill="#d85d5d"/>
+    <!-- Lantern Core Body -->
+    <rect x="200" y="250" width="112" height="130" rx="20" fill="#292524" fill-opacity="0.06" stroke="#292524" stroke-width="20"/>
+    <!-- Internal Radiant Glow Lines -->
+    <line x1="256" y1="270" x2="256" y2="360" stroke="#d85d5d" stroke-width="16" stroke-linecap="round"/>
+    <line x1="228" y1="285" x2="228" y2="345" stroke="#78716c" stroke-width="12" stroke-linecap="round"/>
+    <line x1="284" y1="285" x2="284" y2="345" stroke="#78716c" stroke-width="12" stroke-linecap="round"/>
+    <!-- Hanging Ceremonial Tassel -->
+    <path d="M256 380 L256 425 M248 435 L264 435 M244 445 L268 445" stroke="#292524" stroke-width="14" stroke-linecap="round"/>
+    <!-- Celebration Celestial Sparks -->
+    <g transform="translate(90, 260)">
+      <path d="M20 0 L20 40 M0 20 L40 20" stroke="#78716c" stroke-width="12" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(380, 260)">
+      <path d="M20 0 L20 40 M0 20 L40 20" stroke="#d85d5d" stroke-width="14" stroke-linecap="round"/>
+    </g>
+    <circle cx="140" cy="360" r="8" fill="#d85d5d"/>
+    <circle cx="370" cy="360" r="8" fill="#78716c"/>
+  </svg>

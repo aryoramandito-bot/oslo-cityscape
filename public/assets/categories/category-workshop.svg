@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <!-- Artisan Palette / Craft Base Ring -->
+    <circle cx="256" cy="256" r="210" fill="none" stroke="#e7e5e4" stroke-width="16" stroke-dasharray="12 12"/>
+    <!-- Flowing craft ribbon / Batik wax line -->
+    <path d="M120 360 C160 300, 210 370, 270 320 C320 280, 360 310, 400 260" fill="none" stroke="#a8a29e" stroke-width="18" stroke-linecap="round"/>
+    <!-- Stylized Artisan Canting / Craft Pen Tool -->
+    <g transform="translate(40, -10)">
+      <!-- Wood Handle -->
+      <path d="M140 370 L250 260" stroke="#292524" stroke-width="26" stroke-linecap="round"/>
+      <path d="M130 380 L160 350" stroke="#78716c" stroke-width="14" stroke-linecap="round"/>
+      <!-- Brass Ferrule -->
+      <path d="M245 265 L270 240" stroke="#78716c" stroke-width="32" stroke-linecap="round"/>
+      <!-- Copper Reservoir Bowl -->
+      <path d="M265 245 C285 225, 325 220, 345 240 C365 260, 360 300, 340 320 C320 338, 280 335, 260 315 Z" fill="#292524" fill-opacity="0.08" stroke="#292524" stroke-width="20" stroke-linejoin="round"/>
+      <!-- Precision Spout / Nib -->
+      <path d="M342 245 C365 245, 385 260, 385 285 C385 305, 370 320, 350 320" fill="none" stroke="#292524" stroke-width="18" stroke-linecap="round"/>
+      <!-- Liquid Rose Wax Droplet -->
+      <circle cx="350" cy="336" r="12" fill="#d85d5d"/>
+    </g>
+    <!-- Geometric Artisan Sparkle -->
+    <path d="M160 130 L160 170 M140 150 L180 150" stroke="#d85d5d" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="380" cy="150" r="10" fill="#78716c"/>
+    <circle cx="120" cy="240" r="8" fill="#a8a29e"/>
+  </svg>

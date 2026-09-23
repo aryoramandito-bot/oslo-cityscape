@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <!-- Outer Cultural Frame Halo -->
+    <circle cx="256" cy="256" r="210" fill="none" stroke="#e7e5e4" stroke-width="16"/>
+    <!-- Classical Theater Mask & Gamelan Gong Silhouette -->
+    <!-- Traditional Court Crown / Crest (Makuta) -->
+    <path d="M256 90 L280 160 L330 140 L310 200 L370 200 L310 240 L256 220 L202 240 L142 200 L202 200 L182 140 L232 160 Z" fill="#292524" fill-opacity="0.08" stroke="#292524" stroke-width="18" stroke-linejoin="round"/>
+    <!-- Crown Jewel -->
+    <circle cx="256" cy="180" r="14" fill="#d85d5d"/>
+    <!-- Classical Artistic Mask Arc -->
+    <path d="M150 250 C150 350, 200 410, 256 410 C312 410, 362 350, 362 250" fill="none" stroke="#292524" stroke-width="22" stroke-linecap="round"/>
+    <!-- Serene Eyes -->
+    <path d="M190 280 Q 215 265 240 280" fill="none" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <path d="M272 280 Q 297 265 322 280" fill="none" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <!-- Royal Bindi / Third Eye Point -->
+    <circle cx="256" cy="260" r="7" fill="#78716c"/>
+    <!-- Smile Arc -->
+    <path d="M226 345 Q 256 365 286 345" fill="none" stroke="#292524" stroke-width="16" stroke-linecap="round"/>
+    <!-- Acoustic Resonance Musical Chime Waves -->
+    <path d="M100 220 C85 240, 85 270, 100 290" fill="none" stroke="#78716c" stroke-width="14" stroke-linecap="round"/>
+    <path d="M412 220 C427 240, 427 270, 412 290" fill="none" stroke="#78716c" stroke-width="14" stroke-linecap="round"/>
+    <!-- Musical Note Star -->
+    <path d="M390 120 L390 150 M375 135 L405 135" stroke="#d85d5d" stroke-width="12" stroke-linecap="round"/>
+  </svg>

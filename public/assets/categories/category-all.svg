@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <!-- Double-Bezel Calendar Outline -->
+    <rect x="80" y="100" width="352" height="340" rx="56" fill="#292524" fill-opacity="0.05" stroke="#292524" stroke-width="22"/>
+    <!-- Top Binding Header Bar -->
+    <path d="M80 180 L432 180" stroke="#292524" stroke-width="22" stroke-linecap="square"/>
+    <!-- Calendar Hanging Rings -->
+    <line x1="160" y1="65" x2="160" y2="125" stroke="#292524" stroke-width="20" stroke-linecap="round"/>
+    <line x1="352" y1="65" x2="352" y2="125" stroke="#292524" stroke-width="20" stroke-linecap="round"/>
+    <!-- Timetable Grid Cells -->
+    <!-- Row 1 -->
+    <rect x="135" y="225" width="65" height="55" rx="14" fill="#292524"/>
+    <rect x="225" y="225" width="65" height="55" rx="14" fill="#78716c" fill-opacity="0.2" stroke="#78716c" stroke-width="10"/>
+    <rect x="315" y="225" width="65" height="55" rx="14" fill="#78716c" fill-opacity="0.2" stroke="#78716c" stroke-width="10"/>
+    <!-- Row 2 -->
+    <rect x="135" y="315" width="65" height="55" rx="14" fill="#78716c" fill-opacity="0.2" stroke="#78716c" stroke-width="10"/>
+    <!-- Active Selected Date in Oslo Rose -->
+    <rect x="225" y="315" width="65" height="55" rx="14" fill="#d85d5d"/>
+    <rect x="315" y="315" width="65" height="55" rx="14" fill="#78716c" fill-opacity="0.2" stroke="#78716c" stroke-width="10"/>
+    <!-- Spark Indicator on Active Date -->
+    <circle cx="257.5" cy="342.5" r="9" fill="#ffffff"/>
+  </svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <!-- Artisanal Ceramic Bowl Base Rim -->
+    <path d="M96 240 C96 350, 160 410, 256 410 C352 410, 416 350, 416 240 Z" fill="#292524" fill-opacity="0.06" stroke="#292524" stroke-width="22" stroke-linejoin="round"/>
+    <!-- Bowl Foot Ring -->
+    <path d="M190 410 L180 436 L332 436 L322 410" fill="none" stroke="#292524" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Bowl Lip Rim -->
+    <line x1="80" y1="240" x2="432" y2="240" stroke="#292524" stroke-width="22" stroke-linecap="round"/>
+    <!-- Broth Level Interior Line -->
+    <path d="M120 270 Q 256 285 392 270" fill="none" stroke="#78716c" stroke-width="14" stroke-linecap="round"/>
+    <!-- Ceramic Tasting Spoon Resting Across Bowl -->
+    <g transform="rotate(-28 320 220)">
+      <path d="M220 220 L370 220" stroke="#292524" stroke-width="20" stroke-linecap="round"/>
+      <ellipse cx="200" cy="220" rx="36" ry="24" fill="#ffffff" stroke="#292524" stroke-width="18"/>
+      <!-- Tasting drop on spoon -->
+      <circle cx="200" cy="220" r="8" fill="#d85d5d"/>
+    </g>
+    <!-- Minimalist Aromatic Steam Arcs -->
+    <path d="M210 180 C200 150, 220 120, 210 90" fill="none" stroke="#78716c" stroke-width="16" stroke-linecap="round"/>
+    <path d="M256 195 C246 160, 266 130, 256 95" fill="none" stroke="#d85d5d" stroke-width="18" stroke-linecap="round"/>
+    <path d="M302 180 C292 150, 312 120, 302 90" fill="none" stroke="#78716c" stroke-width="16" stroke-linecap="round"/>
+    <!-- Delicate Culinary Spark -->
+    <path d="M380 140 L380 165 M368 152 L392 152" stroke="#d85d5d" stroke-width="10" stroke-linecap="round"/>
+  </svg>
