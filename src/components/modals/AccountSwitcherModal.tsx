@@ -4,14 +4,11 @@ import {
   X,
   Sparkles,
   LogOut,
-  UserPlus,
   Coins,
   MapPin,
-  CheckCircle2,
-  Compass,
-  ArrowRight,
   ShieldCheck,
-  ChevronRight,
+  Mail,
+  User,
 } from 'lucide-react';
 
 export default function AccountSwitcherModal() {
@@ -21,26 +18,18 @@ export default function AccountSwitcherModal() {
     isLogoutModalOpen,
     setIsLogoutModalOpen,
     currentAccount,
-    registeredAccounts,
-    switchUser,
     loyaltyPoints,
     checkins,
     setIsLoginPageOpen,
     loginAsGuest,
   } = useAppContext();
 
-  // If either account switcher or legacy logout modal is open, we render this enhanced hub
   const isOpen = isAccountSwitcherOpen || isLogoutModalOpen;
   if (!isOpen) return null;
 
   const handleClose = () => {
     setIsAccountSwitcherOpen(false);
     setIsLogoutModalOpen(false);
-  };
-
-  const handleAddAccount = () => {
-    handleClose();
-    setIsLoginPageOpen(true);
   };
 
   const initials = currentAccount?.profile?.name
@@ -71,7 +60,7 @@ export default function AccountSwitcherModal() {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-700">
-              Explorer Identity & Accounts
+              Active Explorer Profile
             </span>
           </div>
 
@@ -84,7 +73,7 @@ export default function AccountSwitcherModal() {
           </button>
         </div>
 
-        {/* Active Account Card */}
+        {/* Explorer Identity Card */}
         <div className="p-4 rounded-2xl bg-gradient-to-br from-[#fff1f1]/70 via-white to-white border border-[#fecaca] shadow-xs relative z-10 space-y-3">
           <div className="flex items-center gap-3">
             {/* Avatar Bubble */}
@@ -106,14 +95,14 @@ export default function AccountSwitcherModal() {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 flex-wrap">
                 <h3 className="text-sm font-extrabold font-outfit text-stone-900 truncate">
-                  {currentAccount?.profile?.name || 'Explorer'}
+                  {currentAccount?.profile?.name || 'Astrid Widayani'}
                 </h3>
                 <span className="text-[9px] font-mono font-bold bg-[#d85d5d] text-white px-1.5 py-0.5 rounded-full">
-                  ACTIVE
+                  VERIFIED
                 </span>
               </div>
               <span className="text-[10px] font-mono text-stone-500 block truncate mt-0.5">
-                {currentAccount?.profile?.region || 'Nusantara Explorer'}
+                {currentAccount?.profile?.region || 'Surakarta / Jawa Tengah'}
               </span>
             </div>
           </div>
@@ -146,79 +135,53 @@ export default function AccountSwitcherModal() {
           </div>
         </div>
 
-        {/* Other Accounts on this device */}
-        <div className="space-y-2 relative z-10">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">
-              Switch Account on Device
+        {/* Profile Information List */}
+        <div className="p-3 rounded-2xl bg-stone-50/80 border border-stone-200/60 space-y-2 text-xs relative z-10">
+          <div className="flex items-center justify-between text-stone-600">
+            <span className="flex items-center gap-1.5 text-[11px] text-stone-400 font-mono">
+              <Mail className="w-3.5 h-3.5 text-stone-400" />
+              Email
             </span>
-            <button
-              onClick={handleAddAccount}
-              className="text-[10px] font-mono font-bold text-[#d85d5d] hover:underline cursor-pointer flex items-center gap-0.5"
-            >
-              <UserPlus className="w-3 h-3" />
-              <span>Add Account</span>
-            </button>
+            <span className="font-mono text-[11px] font-semibold text-stone-800 truncate max-w-[190px]">
+              {currentAccount?.email || 'astrid.widayani@voyage.id'}
+            </span>
           </div>
 
-          <div className="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
-            {registeredAccounts
-              .filter((a) => a.id !== currentAccount?.id)
-              .map((account) => {
-                const accInitials = account.profile.name
-                  .split(' ')
-                  .map((w) => w[0])
-                  .join('')
-                  .slice(0, 2);
+          <div className="flex items-center justify-between text-stone-600 border-t border-stone-200/40 pt-1.5">
+            <span className="flex items-center gap-1.5 text-[11px] text-stone-400 font-mono">
+              <User className="w-3.5 h-3.5 text-stone-400" />
+              Role
+            </span>
+            <span className="font-outfit font-semibold text-stone-800">
+              {currentAccount?.role || 'Heritage Custodian'}
+            </span>
+          </div>
 
-                return (
-                  <div
-                    key={account.id}
-                    onClick={() => {
-                      switchUser(account.id);
-                      handleClose();
-                    }}
-                    className="p-2.5 rounded-xl border border-stone-200/70 hover:border-stone-300 bg-white/70 hover:bg-white flex items-center justify-between gap-2 transition-all cursor-pointer group shadow-2xs active:scale-[0.99]"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div
-                        className={`w-8 h-8 rounded-xl bg-gradient-to-br ${
-                          account.profile.avatarColor || 'from-[#d85d5d] to-[#c64f4f]'
-                        } text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-2xs`}
-                      >
-                        {accInitials}
-                      </div>
-                      <div className="min-w-0">
-                        <span className="text-xs font-bold font-outfit text-stone-800 block truncate group-hover:text-[#d85d5d] transition-colors">
-                          {account.profile.name}
-                        </span>
-                        <span className="text-[10px] font-mono text-stone-400 block truncate">
-                          {account.profile.region.split('/')[0]}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1 shrink-0 text-stone-400 group-hover:text-stone-700">
-                      <span className="text-[10px] font-mono text-stone-500 font-semibold">Switch</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </div>
-                  </div>
-                );
-              })}
+          <div className="flex items-center justify-between text-stone-600 border-t border-stone-200/40 pt-1.5">
+            <span className="flex items-center gap-1.5 text-[11px] text-stone-400 font-mono">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              Data Privacy
+            </span>
+            <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60">
+              PDP Law Protected
+            </span>
           </div>
         </div>
 
-        {/* Action Buttons: Add Account | Guest | Sign Out */}
-        <div className="space-y-2 pt-2 border-t border-stone-100 relative z-10">
+        {/* Action Buttons: Sign In with Another Account | Guest Mode */}
+        <div className="space-y-2 pt-1 border-t border-stone-100 relative z-10">
           <button
-            onClick={handleAddAccount}
+            onClick={() => {
+              handleClose();
+              setIsLoginPageOpen(true);
+            }}
             className="w-full py-2.5 px-3 rounded-xl bg-stone-900 hover:bg-black text-white font-outfit font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98]"
           >
-            <UserPlus className="w-4 h-4" />
+            <LogOut className="w-3.5 h-3.5" />
             <span>Sign In to Another Account</span>
           </button>
 
-          <div className="flex items-center justify-between gap-2 pt-1">
+          <div className="flex items-center justify-center pt-0.5">
             <button
               onClick={() => {
                 loginAsGuest();
@@ -226,18 +189,7 @@ export default function AccountSwitcherModal() {
               }}
               className="text-xs text-stone-500 hover:text-stone-800 font-medium cursor-pointer"
             >
-              Guest Mode
-            </button>
-
-            <button
-              onClick={() => {
-                handleClose();
-                setIsLoginPageOpen(true);
-              }}
-              className="text-xs font-bold text-[#d85d5d] hover:underline cursor-pointer flex items-center gap-1"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Switch / Sign Out</span>
+              Continue in Guest Mode →
             </button>
           </div>
         </div>

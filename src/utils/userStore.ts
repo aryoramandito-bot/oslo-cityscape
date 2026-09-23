@@ -11,20 +11,31 @@ const STORAGE_PREFIX_VAULT = 'oslo_vault_';
 export function initializeUserStore(): void {
   try {
     const existingAccounts = localStorage.getItem(STORAGE_KEY_ACCOUNTS);
-    if (!existingAccounts) {
+    if (existingAccounts) {
+      // Filter out stale demo accounts (Budi & Sarah) if present from previous run
+      const parsed: UserAccount[] = JSON.parse(existingAccounts);
+      const filtered = parsed.filter((a) => a.id !== 'usr_budi' && a.id !== 'usr_sarah');
+      if (!filtered.some((a) => a.id === 'usr_astrid')) {
+        filtered.unshift(SEED_PERSONAS[0].account);
+      }
+      localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(filtered));
+      localStorage.removeItem(`${STORAGE_PREFIX_VAULT}usr_budi`);
+      localStorage.removeItem(`${STORAGE_PREFIX_VAULT}usr_sarah`);
+    } else {
       const defaultAccounts = SEED_PERSONAS.map((p) => p.account);
       localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(defaultAccounts));
-
-      // Pre-populate vaults for seed personas
-      SEED_PERSONAS.forEach((persona) => {
-        const vaultKey = `${STORAGE_PREFIX_VAULT}${persona.account.id}`;
-        if (!localStorage.getItem(vaultKey)) {
-          localStorage.setItem(vaultKey, JSON.stringify(persona.vault));
-        }
-      });
     }
 
-    if (!localStorage.getItem(STORAGE_KEY_ACTIVE_USER_ID)) {
+    // Pre-populate vault for Astrid
+    SEED_PERSONAS.forEach((persona) => {
+      const vaultKey = `${STORAGE_PREFIX_VAULT}${persona.account.id}`;
+      if (!localStorage.getItem(vaultKey)) {
+        localStorage.setItem(vaultKey, JSON.stringify(persona.vault));
+      }
+    });
+
+    const activeId = localStorage.getItem(STORAGE_KEY_ACTIVE_USER_ID);
+    if (!activeId || activeId === 'usr_budi' || activeId === 'usr_sarah') {
       localStorage.setItem(STORAGE_KEY_ACTIVE_USER_ID, 'usr_astrid');
     }
   } catch (err) {

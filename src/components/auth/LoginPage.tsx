@@ -11,23 +11,17 @@ import {
   EyeOff,
   User,
   MapPin,
-  Check,
-  ShieldCheck,
   X,
-  Compass,
   Coins,
-  ChevronRight,
 } from 'lucide-react';
 
 interface LoginPageProps {
   onClose?: () => void;
-  initialMode?: 'profiles' | 'login' | 'register';
+  initialMode?: 'login' | 'register';
 }
 
-export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPageProps) {
+export default function LoginPage({ onClose, initialMode = 'login' }: LoginPageProps) {
   const {
-    currentAccount,
-    registeredAccounts,
     switchUser,
     registerUser,
     loginWithEmail,
@@ -35,7 +29,7 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
     setIsLoginPageOpen,
   } = useAppContext();
 
-  const [activeTab, setActiveTab] = useState<'profiles' | 'login' | 'register'>(initialMode);
+  const [activeTab, setActiveTab] = useState<'login' | 'register'>(initialMode);
 
   // Sign In Form State
   const [loginEmail, setLoginEmail] = useState('');
@@ -51,17 +45,10 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
   const [regPassword, setRegPassword] = useState('');
   const [regNationality, setRegNationality] = useState('Indonesian (WNI)');
   const [regRegion, setRegRegion] = useState('Surakarta / Jawa Tengah');
-  const [regAge, setRegAge] = useState('25-34');
+  const [regAge, setRegAge] = useState('35-49');
   const [regGender, setRegGender] = useState('Female');
   const [regAvatarColor, setRegAvatarColor] = useState('from-[#d85d5d] to-[#c64f4f]');
   const [regPdpConsent, setRegPdpConsent] = useState(true);
-
-  // Quick autofill for demo
-  const handleAutofill = (email: string) => {
-    setLoginEmail(email);
-    setLoginPassword('password123');
-    setLoginError(null);
-  };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,20 +154,8 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
           )}
         </div>
 
-        {/* Segmented Tab Navigation: Profiles | Sign In | Register */}
+        {/* 2-Segment Tab Navigation: Sign In | Create Account */}
         <div className="p-1 rounded-2xl bg-stone-100/90 border border-stone-200/70 flex items-center gap-1 select-none relative z-10">
-          <button
-            type="button"
-            onClick={() => setActiveTab('profiles')}
-            className={`flex-1 py-2 text-xs font-outfit font-bold rounded-xl transition-all cursor-pointer text-center ${
-              activeTab === 'profiles'
-                ? 'bg-white text-stone-900 shadow-xs border border-white'
-                : 'text-stone-500 hover:text-stone-800'
-            }`}
-          >
-            Accounts ({registeredAccounts.length})
-          </button>
-
           <button
             type="button"
             onClick={() => setActiveTab('login')}
@@ -202,137 +177,52 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
                 : 'text-stone-500 hover:text-stone-800'
             }`}
           >
-            Create
+            Create Account
           </button>
         </div>
 
         {/* ========================================================================= */}
-        {/* TAB 1: 1-TAP MULTI-USER PROFILES SELECTOR */}
+        {/* TAB 1: SIGN IN (WITH 1-TAP ASTRID QUICK ACCESS) */}
         {/* ========================================================================= */}
-        {activeTab === 'profiles' && (
-          <div className="space-y-3 relative z-10 animate-in fade-in slide-in-from-bottom-2 duration-200">
-            <div>
-              <h3 className="text-sm font-extrabold font-outfit text-stone-900">
-                Registered Explorers on this Device
-              </h3>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                Tap any profile to resume their separate passport, check-ins, and loyalty ledger.
-              </p>
-            </div>
-
-            <div className="space-y-2.5 max-h-72 overflow-y-auto pr-0.5">
-              {registeredAccounts.map((account) => {
-                const isCurrent = currentAccount?.id === account.id && !currentAccount?.isGuest;
-                const initials = account.profile.name
-                  .split(' ')
-                  .map((w) => w[0])
-                  .join('')
-                  .slice(0, 2);
-
-                return (
-                  <div
-                    key={account.id}
-                    onClick={() => {
-                      switchUser(account.id);
-                      if (onClose) onClose();
-                      setIsLoginPageOpen(false);
-                    }}
-                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99] ${
-                      isCurrent
-                        ? 'bg-gradient-to-r from-[#fff1f1] to-white border-[#fecaca] shadow-xs ring-1 ring-[#d85d5d]/20'
-                        : 'bg-white/80 hover:bg-white border-stone-200/80 hover:border-stone-300 shadow-2xs'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      {/* Avatar */}
-                      <div
-                        className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${
-                          account.profile.avatarColor || 'from-[#d85d5d] to-[#c64f4f]'
-                        } text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-2xs relative`}
-                      >
-                        {initials}
-                        {account.profile.isVerified && (
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-xs">
-                            <Sparkles className="w-2.5 h-2.5 text-white" />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-xs font-bold font-outfit text-stone-900 truncate">
-                            {account.profile.name}
-                          </span>
-                          {isCurrent && (
-                            <span className="text-[9px] font-mono font-bold bg-[#d85d5d] text-white px-1.5 py-0.2 rounded-full">
-                              ACTIVE
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-stone-500">
-                          <span className="flex items-center gap-0.5 truncate">
-                            <MapPin className="w-3 h-3 text-[#d85d5d] shrink-0" />
-                            {account.profile.region.split('/')[0]}
-                          </span>
-                          <span>•</span>
-                          <span className="truncate">{account.role || 'Explorer'}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[11px] font-mono font-bold text-stone-700 bg-stone-100 px-2 py-0.5 rounded-lg border border-stone-200/60">
-                        {account.id === 'usr_astrid'
-                          ? '6,650 pts'
-                          : account.id === 'usr_budi'
-                          ? '3,400 pts'
-                          : account.id === 'usr_sarah'
-                          ? '1,200 pts'
-                          : 'Active'}
-                      </span>
-                      <ChevronRight className="w-4 h-4 text-stone-400 group-hover:translate-x-0.5 group-hover:text-[#d85d5d] transition-all" />
-                    </div>
+        {activeTab === 'login' && (
+          <form onSubmit={handleLoginSubmit} className="space-y-3.5 relative z-10 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            {/* 1-Tap Quick Access: Continue as Astrid Widayani (Device Owner) */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#fff1f1] to-white border border-[#fecaca] shadow-xs flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d85d5d] to-[#c64f4f] text-white flex items-center justify-center font-extrabold text-sm shrink-0 shadow-2xs relative">
+                  AW
+                  <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-xs">
+                    <Sparkles className="w-2 h-2 text-white" />
                   </div>
-                );
-              })}
-            </div>
-
-            <div className="pt-2 border-t border-stone-100 flex items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={() => setActiveTab('register')}
-                className="text-xs font-bold text-[#d85d5d] hover:underline cursor-pointer"
-              >
-                + Add New Explorer Account
-              </button>
+                </div>
+                <div className="min-w-0 text-left">
+                  <span className="text-xs font-bold font-outfit text-stone-900 block truncate">
+                    Astrid Widayani
+                  </span>
+                  <span className="text-[10px] font-mono text-stone-500 block truncate">
+                    Surakarta / Solo · Heritage Custodian
+                  </span>
+                </div>
+              </div>
 
               <button
                 type="button"
                 onClick={() => {
-                  loginAsGuest();
+                  switchUser('usr_astrid');
                   if (onClose) onClose();
+                  setIsLoginPageOpen(false);
                 }}
-                className="text-xs text-stone-500 hover:text-stone-800 font-medium cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-[#d85d5d] hover:bg-[#c64f4f] text-white text-xs font-outfit font-bold transition-all shadow-xs cursor-pointer active:scale-95 shrink-0 flex items-center gap-1"
               >
-                Explore as Guest →
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
-          </div>
-        )}
 
-        {/* ========================================================================= */}
-        {/* TAB 2: SIGN IN WITH EMAIL & PASSWORD */}
-        {/* ========================================================================= */}
-        {activeTab === 'login' && (
-          <form onSubmit={handleLoginSubmit} className="space-y-3.5 relative z-10 animate-in fade-in slide-in-from-bottom-2 duration-200">
-            <div>
-              <h3 className="text-sm font-extrabold font-outfit text-stone-900">
-                Sign In to Your Passport
-              </h3>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                Access your digital visa stamps, tenant perks, and loyalty rewards.
-              </p>
+            <div className="flex items-center gap-2 my-1">
+              <div className="flex-1 h-px bg-stone-100" />
+              <span className="text-[10px] font-mono text-stone-400 uppercase tracking-wider">or sign in with email</span>
+              <div className="flex-1 h-px bg-stone-100" />
             </div>
 
             {loginError && (
@@ -392,36 +282,6 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
               </div>
             </div>
 
-            {/* Fast Demo Shortcuts */}
-            <div className="space-y-1.5 pt-1">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-stone-400 block">
-                Quick Demo Sign-In Shortcuts:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => handleAutofill('astrid.widayani@voyage.id')}
-                  className="text-[10px] font-mono px-2 py-1 rounded-lg bg-stone-100 hover:bg-[#fff1f1] hover:text-[#d85d5d] border border-stone-200 transition-colors cursor-pointer"
-                >
-                  ⚡ Astrid (Solo)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAutofill('budi.santoso@voyage.id')}
-                  className="text-[10px] font-mono px-2 py-1 rounded-lg bg-stone-100 hover:bg-[#fff1f1] hover:text-[#d85d5d] border border-stone-200 transition-colors cursor-pointer"
-                >
-                  ⚡ Budi (Bandung)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAutofill('sarah.jenkins@expats.voyage')}
-                  className="text-[10px] font-mono px-2 py-1 rounded-lg bg-stone-100 hover:bg-[#fff1f1] hover:text-[#d85d5d] border border-stone-200 transition-colors cursor-pointer"
-                >
-                  ⚡ Sarah (Jakarta)
-                </button>
-              </div>
-            </div>
-
             {/* Primary Sign In Button */}
             <button
               type="submit"
@@ -447,7 +307,11 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => handleAutofill('astrid.widayani@voyage.id')}
+                  onClick={() => {
+                    switchUser('usr_astrid');
+                    if (onClose) onClose();
+                    setIsLoginPageOpen(false);
+                  }}
                   className="py-2 px-3 rounded-xl border border-stone-200 hover:bg-stone-50 flex items-center justify-center gap-2 text-xs font-semibold text-stone-700 transition-colors cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
@@ -461,7 +325,11 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
 
                 <button
                   type="button"
-                  onClick={() => handleAutofill('sarah.jenkins@expats.voyage')}
+                  onClick={() => {
+                    switchUser('usr_astrid');
+                    if (onClose) onClose();
+                    setIsLoginPageOpen(false);
+                  }}
                   className="py-2 px-3 rounded-xl border border-stone-200 hover:bg-stone-50 flex items-center justify-center gap-2 text-xs font-semibold text-stone-700 transition-colors cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5 fill-current text-stone-900" viewBox="0 0 24 24">
@@ -471,11 +339,24 @@ export default function LoginPage({ onClose, initialMode = 'profiles' }: LoginPa
                 </button>
               </div>
             </div>
+
+            <div className="pt-2 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  loginAsGuest();
+                  if (onClose) onClose();
+                }}
+                className="text-xs text-stone-500 hover:text-stone-800 font-medium cursor-pointer"
+              >
+                Just exploring? Continue as Guest Explorer →
+              </button>
+            </div>
           </form>
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 3: CREATE NEW EXPLORER ACCOUNT */}
+        {/* TAB 2: CREATE NEW EXPLORER ACCOUNT */}
         {/* ========================================================================= */}
         {activeTab === 'register' && (
           <form onSubmit={handleRegisterSubmit} className="space-y-3.5 relative z-10 animate-in fade-in slide-in-from-bottom-2 duration-200">
