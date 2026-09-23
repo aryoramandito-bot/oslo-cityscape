@@ -9,7 +9,9 @@ import {
   ShieldCheck,
   Mail,
   User,
+  Clock,
 } from 'lucide-react';
+import { useSession, TimeoutPreset } from '../../hooks/useSessionManager';
 
 export default function AccountSwitcherModal() {
   const {
@@ -23,6 +25,7 @@ export default function AccountSwitcherModal() {
     setIsLoginPageOpen,
     loginAsGuest,
   } = useAppContext();
+  const { timeoutPreset, setTimeoutPreset, triggerDemoWarning } = useSession();
 
   const isOpen = isAccountSwitcherOpen || isLogoutModalOpen;
   if (!isOpen) return null;
@@ -165,6 +168,64 @@ export default function AccountSwitcherModal() {
             <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60">
               PDP Law Protected
             </span>
+          </div>
+        </div>
+
+        {/* Session Security & Inactivity Timeout Controls */}
+        <div className="p-3.5 rounded-2xl bg-stone-50/90 border border-stone-200/70 space-y-2.5 relative z-10">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-[11px] font-bold font-mono text-stone-700 uppercase tracking-wider">
+              <Clock className="w-3.5 h-3.5 text-[#d85d5d]" />
+              Inactivity Timeout
+            </span>
+            <span className="text-[10px] font-mono text-stone-400">
+              Auto-Lock
+            </span>
+          </div>
+
+          {/* Preset Pills */}
+          <div className="grid grid-cols-4 gap-1 p-1 bg-stone-200/50 rounded-xl">
+            {(
+              [
+                { id: '2m', label: '2 min' },
+                { id: '15m', label: '15 min' },
+                { id: '30m', label: '30 min' },
+                { id: 'never', label: 'Never' },
+              ] as const
+            ).map((preset) => {
+              const isSelected = timeoutPreset === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => setTimeoutPreset(preset.id as TimeoutPreset)}
+                  className={`py-1.5 rounded-lg text-[10px] font-outfit font-bold transition-all cursor-pointer text-center ${
+                    isSelected
+                      ? 'bg-[#d85d5d] text-white shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900 bg-transparent'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Quick Demo Trigger for Stakeholders */}
+          <div className="flex items-center justify-between pt-1 border-t border-stone-200/40 text-[10px]">
+            <span className="text-stone-400 font-mono">
+              Evaluator Test:
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                handleClose();
+                triggerDemoWarning();
+              }}
+              className="font-outfit font-bold text-[#d85d5d] hover:underline cursor-pointer flex items-center gap-1"
+            >
+              <span>⚡ Test Warning (10s Demo)</span>
+            </button>
           </div>
         </div>
 

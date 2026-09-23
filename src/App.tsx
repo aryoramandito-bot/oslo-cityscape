@@ -17,9 +17,13 @@ import LogoutModal from './components/modals/LogoutModal';
 import AccountSwitcherModal from './components/modals/AccountSwitcherModal';
 import LoginPage from './components/auth/LoginPage';
 import PointsToast from './components/common/PointsToast';
+import { SessionProvider, useSession } from './hooks/useSessionManager';
+import SessionWarningModal from './components/modals/SessionWarningModal';
+import SessionLockModal from './components/modals/SessionLockModal';
 
 function MainLayout() {
-  const { activeTab, isLoginModalOpen, setIsLoginModalOpen, isLoginPageOpen, setIsLoginPageOpen } = useAppContext();
+  const { activeTab, isLoginModalOpen, setIsLoginModalOpen, isLoginPageOpen, setIsLoginPageOpen, logout } = useAppContext();
+  const { sessionState, warningCountdown, sessionStartedAt, extendSession, lockNow, unlock } = useSession();
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -68,6 +72,27 @@ function MainLayout() {
       {isLoginModalOpen && (
         <OnboardingModal onComplete={() => setIsLoginModalOpen(false)} />
       )}
+
+      {/* SaaS Inactivity Warning Modal */}
+      {sessionState === 'warning' && (
+        <SessionWarningModal
+          countdown={warningCountdown}
+          onExtend={extendSession}
+          onLockNow={lockNow}
+        />
+      )}
+
+      {/* SaaS State-Preserving Session Lock Modal */}
+      {sessionState === 'locked' && (
+        <SessionLockModal
+          sessionStartedAt={sessionStartedAt}
+          onUnlock={unlock}
+          onSignOut={() => {
+            unlock();
+            logout();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -75,7 +100,10 @@ function MainLayout() {
 export default function App() {
   return (
     <AppProvider>
-      <MainLayout />
+      <SessionProvider>
+        <MainLayout />
+      </SessionProvider>
     </AppProvider>
   );
 }
+
