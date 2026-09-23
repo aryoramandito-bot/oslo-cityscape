@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { AppProvider, useAppContext } from './context/AppContext';
 import Header from './components/common/Header';
 import BottomNav from './components/navigation/BottomNav';
@@ -17,7 +16,7 @@ import LogoutModal from './components/modals/LogoutModal';
 import PointsToast from './components/common/PointsToast';
 
 function MainLayout() {
-  const { activeTab, isLoginModalOpen, setIsLoginModalOpen, isLogoutModalOpen } = useAppContext();
+  const { activeTab, isLoginModalOpen, setIsLoginModalOpen } = useAppContext();
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -37,19 +36,19 @@ function MainLayout() {
   };
 
   return (
-    <div className="mx-auto max-w-md min-h-screen bg-[#f9f8f6] text-gray-800 flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.06)] border-x border-gray-200/60 font-sans">
+    <div className="mx-auto max-w-md min-h-screen bg-[#f9f8f6] text-stone-900 flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.06)] border-x border-stone-200/60 font-sans selection:bg-[#ff9898]/30">
       {/* Floating Animated Celebration Toast */}
       <PointsToast />
 
       {/* Persistent Header */}
       <Header />
 
-      {/* Main Tab View Area */}
-      <main className="flex-1 px-4 pt-3 overflow-y-auto">
+      {/* Main Tab View Area with generous clearance above floating BottomNav */}
+      <main className="flex-1 px-4 pt-3 pb-28 overflow-y-auto overscroll-contain">
         {renderActiveTab()}
       </main>
 
-      {/* Persistent Bottom Navigation */}
+      {/* Floating 2026 Island Bottom Navigation */}
       <BottomNav />
 
       {/* Modals & Overlays */}
