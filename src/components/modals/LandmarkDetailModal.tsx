@@ -11,6 +11,10 @@ import {
   Share2,
   MessageSquare,
   Sparkles,
+  Navigation,
+  ExternalLink,
+  Copy,
+  Check,
 } from 'lucide-react';
 
 export default function LandmarkDetailModal() {
@@ -31,6 +35,25 @@ export default function LandmarkDetailModal() {
   const [ratingInput, setRatingInput] = useState(5);
   const [commentInput, setCommentInput] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [copiedCoords, setCopiedCoords] = useState(false);
+
+  const handleOpenGoogleMapsDirections = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!selectedLandmark) return;
+    const { lat, lng } = selectedLandmark;
+    // Standard Google Maps Directions URL - launches turn-by-turn navigation directly to coordinates
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleCopyCoords = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!selectedLandmark) return;
+    const coords = `${selectedLandmark.lat}, ${selectedLandmark.lng}`;
+    navigator.clipboard.writeText(coords);
+    setCopiedCoords(true);
+    setTimeout(() => setCopiedCoords(false), 2000);
+  };
 
   if (!selectedLandmark) return null;
 
@@ -94,24 +117,36 @@ export default function LandmarkDetailModal() {
             <button
               onClick={() => setSelectedLandmark(null)}
               className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95"
+              title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <button
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({
-                    title: selectedLandmark.name,
-                    text: selectedLandmark.description,
-                    url: window.location.href,
-                  });
-                }
-              }}
-              className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95"
-            >
-              <Share2 className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleOpenGoogleMapsDirections}
+                title="Navigate via Google Maps"
+                className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 group"
+              >
+                <Navigation className="w-4.5 h-4.5 fill-white/20 group-hover:scale-110 transition-transform" />
+              </button>
+
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: selectedLandmark.name,
+                      text: selectedLandmark.description,
+                      url: window.location.href,
+                    });
+                  }
+                }}
+                className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95"
+                title="Share landmark"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Bottom Hero Info */}
@@ -152,6 +187,66 @@ export default function LandmarkDetailModal() {
                 <span>Real Map</span>
               </button>
             </div>
+          </div>
+
+          {/* Direct Google Maps Direction CTA with Live Coordinates Callout */}
+          <div className="rounded-2xl bg-gradient-to-r from-blue-50/70 via-white/80 to-blue-50/40 hover:from-blue-50/90 hover:to-white backdrop-blur-xl border border-blue-200/70 hover:border-blue-300 shadow-2xs hover:shadow-md transition-all p-3.5 flex items-center justify-between gap-3 group">
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                type="button"
+                onClick={handleOpenGoogleMapsDirections}
+                className="w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform cursor-pointer"
+                title="Navigate via Google Maps"
+              >
+                <Navigation className="w-5 h-5 fill-white/20" />
+              </button>
+
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-xs font-bold font-outfit text-stone-900">
+                    Direction
+                  </span>
+                  <span className="text-[9.5px] font-mono font-bold text-blue-700 bg-blue-100/70 px-1.5 py-0.5 rounded-md border border-blue-200/80">
+                    Google Maps
+                  </span>
+                </div>
+
+                {/* Direct Coordinate Callout & 1-Click Copy */}
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="text-[10px] font-mono font-semibold text-stone-600 bg-white/90 px-1.5 py-0.5 rounded border border-stone-200/70 truncate">
+                    GPS: {selectedLandmark.lat.toFixed(5)}, {selectedLandmark.lng.toFixed(5)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyCoords}
+                    className="text-[10px] font-mono font-semibold text-stone-500 hover:text-stone-800 flex items-center gap-0.5 cursor-pointer bg-stone-50 hover:bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200/60 transition-colors shrink-0"
+                    title="Copy exact GPS coordinates"
+                  >
+                    {copiedCoords ? (
+                      <>
+                        <Check className="w-2.5 h-2.5 text-emerald-600" />
+                        <span className="text-emerald-700 font-bold">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-2.5 h-2.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick 1-Tap Navigate Button */}
+            <button
+              type="button"
+              onClick={handleOpenGoogleMapsDirections}
+              className="shrink-0 flex items-center gap-1.5 text-xs font-outfit font-bold text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-2.5 rounded-xl transition-all shadow-xs active:scale-95 cursor-pointer"
+            >
+              <span>Navigate</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </button>
           </div>
 
           {/* Check-in CTA Button: Oslo Rose Liquid Pill (NO PITCH BLACK) */}

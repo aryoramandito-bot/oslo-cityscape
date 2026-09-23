@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type React from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { mapCoordinates } from '../../data/mapCoordinates';
-import { ChevronLeft, Radar, MapPin, CheckCircle2, ArrowRight, Map as MapIcon, Sparkles } from 'lucide-react';
+import { ChevronLeft, Radar, MapPin, CheckCircle2, ArrowRight, Map as MapIcon, Sparkles, Navigation } from 'lucide-react';
 import { Landmark } from '../../types';
 import RealMap from '../map/RealMap';
 import { isWithinCheckinRadius } from '../../utils/geo';
@@ -157,13 +157,29 @@ export default function RadarMapModal() {
               </div>
             </div>
 
-            <button
-              onClick={() => handleOpenDetails(activePin)}
-              className="mt-3 w-full py-2.5 rounded-xl bg-[#d85d5d] hover:bg-[#c64f4f] text-white font-outfit font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              <span>View Full Details & Check In</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  const url = `https://www.google.com/maps/dir/?api=1&destination=${activePin.lat},${activePin.lng}`;
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                }}
+                className="py-2.5 px-3 rounded-xl bg-blue-50/80 hover:bg-blue-100/80 text-blue-700 border border-blue-200/80 font-outfit font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-95"
+                title="Navigate via Google Maps"
+              >
+                <Navigation className="w-3.5 h-3.5 fill-blue-600/20" />
+                <span>Directions</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleOpenDetails(activePin)}
+                className="py-2.5 px-3 rounded-xl bg-[#d85d5d] hover:bg-[#c64f4f] text-white font-outfit font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+              >
+                <span>Full Details</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         )}
       </div>
