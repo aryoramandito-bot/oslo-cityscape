@@ -1,14 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import { ShieldCheck, Sparkles, Check, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useConfetti } from '../../hooks/useConfetti';
+import { TravelArchetype } from '../../types';
+import { ShieldCheck, Sparkles, Check, ArrowRight, ArrowLeft, Compass, Award } from 'lucide-react';
 
 interface OnboardingModalProps {
   onComplete: () => void;
+  onLaunchTour?: () => void;
 }
 
-export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
-  const { setUserProfile } = useAppContext();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+interface ArchetypeCard {
+  id: TravelArchetype;
+  icon: string;
+  title: string;
+  desc: string;
+}
+
+const ARCHETYPES: ArchetypeCard[] = [
+  {
+    id: 'heritage',
+    icon: '🏛️',
+    title: 'Heritage Custodian',
+    desc: 'Kasunanan, Mangkunegaran & classical royal bastions',
+  },
+  {
+    id: 'culinary',
+    icon: '🍜',
+    title: 'Culinary Connoisseur',
+    desc: 'Timlo Sastro, Selat Solo & legendary street eats',
+  },
+  {
+    id: 'photowalker',
+    icon: '📸',
+    title: 'Slow Photowalker',
+    desc: 'Gang Senggol, Kampoeng Laweyan & scenic vantage points',
+  },
+  {
+    id: 'craft',
+    icon: '🎨',
+    title: 'Batik & Craft Patron',
+    desc: 'Canting workshops, Danar Hadi & master textile guilds',
+  },
+];
+
+export default function OnboardingModal({ onComplete, onLaunchTour }: OnboardingModalProps) {
+  const { setUserProfile, rewardPoints } = useAppContext();
+  const { triggerCelebration } = useConfetti();
+
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Form State initialized to Astrid Widayani
   const [name, setName] = useState('Astrid Widayani');
@@ -16,8 +55,16 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
   const [region, setRegion] = useState('Surakarta / Jawa Tengah');
   const [age, setAge] = useState('35-49');
   const [gender, setGender] = useState('Female');
+  const [selectedArchetype, setSelectedArchetype] = useState<TravelArchetype>('heritage');
 
-  const handleFinish = () => {
+  // Trigger celebration confetti when landing on Step 4
+  useEffect(() => {
+    if (step === 4) {
+      triggerCelebration();
+    }
+  }, [step, triggerCelebration]);
+
+  const handleFinish = (withTour: boolean = false) => {
     setUserProfile({
       providerUid: 'voyage_explorer_882910',
       name: name.trim() || 'Astrid Widayani',
@@ -27,34 +74,38 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
       gender,
       isVerified: true,
     });
+
     localStorage.setItem('oslo_onboarding_completed', 'true');
+    localStorage.setItem('oslo_travel_archetype', selectedArchetype);
+
+    // Award welcome grant
+    rewardPoints(500, 'Welcome Explorer Grant', '🏅');
+
     onComplete();
+    if (withTour && onLaunchTour) {
+      onLaunchTour();
+    }
   };
 
-  const handleQuickLoginAstrid = () => {
-    setUserProfile({
-      providerUid: 'voyage_explorer_882910',
-      name: 'Astrid Widayani',
-      nationality,
-      region,
-      age,
-      gender: 'Female',
-      isVerified: true,
-    });
-    localStorage.setItem('oslo_onboarding_completed', 'true');
-    onComplete();
-  };
+  const selectedArchetypeData = ARCHETYPES.find((a) => a.id === selectedArchetype) || ARCHETYPES[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-stone-200/80 flex flex-col justify-between min-h-[480px]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-4 bg-stone-900/60 backdrop-blur-md animate-in fade-in duration-300"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 shadow-2xl border border-stone-200/80 flex flex-col justify-between min-h-[500px] relative overflow-hidden animate-in zoom-in-95 duration-200">
+        {/* Ambient Top Glow */}
+        <div className="absolute -top-20 -right-20 w-44 h-44 bg-[#ff9898]/20 rounded-full blur-3xl pointer-events-none" />
+
         {/* Step Indicator Header */}
-        <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-4">
+        <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-3 relative z-10">
           <div className="flex items-center gap-1.5">
-            {step > 1 ? (
+            {step > 1 && step < 4 ? (
               <button
                 type="button"
-                onClick={() => setStep((s) => (s - 1) as 1 | 2)}
+                onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)}
                 className="w-6 h-6 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-600 transition-colors mr-1 cursor-pointer"
                 title="Go back"
               >
@@ -63,16 +114,19 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
             ) : (
               <span className="w-2 h-2 rounded-full bg-[#d85d5d]" />
             )}
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">
-              Explorer Identity · Step {step} of 3
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-500">
+              {step === 1 && 'Explorer Identity · Step 1 of 4'}
+              {step === 2 && 'Travel Persona · Step 2 of 4'}
+              {step === 3 && 'Privacy & Consent · Step 3 of 4'}
+              {step === 4 && 'Passport Activated · Step 4 of 4'}
             </span>
           </div>
 
           <div className="flex items-center gap-1">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4].map((s) => (
               <div
                 key={s}
-                className={`w-4 h-1.5 rounded-full transition-colors ${
+                className={`w-3.5 h-1.5 rounded-full transition-colors ${
                   s <= step ? 'bg-[#d85d5d]' : 'bg-stone-200'
                 }`}
               />
@@ -80,26 +134,26 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
           </div>
         </div>
 
-        {/* Step 1: Authentication Simulation */}
+        {/* STEP 1: Welcome & Quick Login */}
         {step === 1 && (
-          <div className="flex-1 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col justify-between relative z-10">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-[#fff1f1] border border-[#fecaca] text-[#d85d5d] flex items-center justify-center mb-3 shadow-2xs">
-                <Sparkles className="w-6 h-6" />
+              <div className="w-11 h-11 rounded-2xl bg-[#fff1f1] border border-[#fecaca] text-[#d85d5d] flex items-center justify-center mb-2.5 shadow-2xs">
+                <Sparkles className="w-5 h-5" />
               </div>
               <h2 className="text-xl font-extrabold text-stone-900 font-outfit tracking-tight">
                 Welcome to Oslo Cityscape
               </h2>
               <p className="text-xs text-stone-500 mt-1 leading-relaxed">
-                Connect your explorer profile to unlock cultural discovery passports, exclusive
+                Connect your personal explorer profile to unlock cultural discovery passports, exclusive
                 merchant perks, and verified check-in stamps.
               </p>
 
               <div className="mt-4 space-y-2.5">
-                {/* 1-Tap Quick Sign-In for Astrid Widayani */}
+                {/* 1-Tap Quick Access for Astrid Widayani */}
                 <button
                   type="button"
-                  onClick={handleQuickLoginAstrid}
+                  onClick={() => setStep(2)}
                   className="w-full py-3 px-3.5 rounded-2xl bg-stone-900 hover:bg-black text-white flex items-center justify-between transition-all cursor-pointer text-xs font-bold font-outfit shadow-sm border border-stone-800 group active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -124,11 +178,11 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
                   <div className="flex-1 h-px bg-stone-100" />
                 </div>
 
-                {/* Google Sign In with Quad-color 'G' */}
+                {/* Google Sign In */}
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="w-full py-2.5 px-4 rounded-2xl border border-stone-200 flex items-center justify-between hover:bg-stone-50 transition-colors cursor-pointer text-xs font-semibold text-stone-700 font-outfit shadow-2xs"
+                  className="w-full py-2.5 px-3.5 rounded-2xl border border-stone-200 flex items-center justify-between hover:bg-stone-50 transition-colors cursor-pointer text-xs font-semibold text-stone-700 font-outfit shadow-2xs"
                 >
                   <div className="flex items-center gap-2.5">
                     <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -142,11 +196,11 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
                   <ArrowRight className="w-4 h-4 text-stone-400" />
                 </button>
 
-                {/* Apple ID with Apple vector */}
+                {/* Apple ID */}
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="w-full py-2.5 px-4 rounded-2xl border border-stone-200 flex items-center justify-between hover:bg-stone-50 transition-colors cursor-pointer text-xs font-semibold text-stone-700 font-outfit shadow-2xs"
+                  className="w-full py-2.5 px-3.5 rounded-2xl border border-stone-200 flex items-center justify-between hover:bg-stone-50 transition-colors cursor-pointer text-xs font-semibold text-stone-700 font-outfit shadow-2xs"
                 >
                   <div className="flex items-center gap-2.5">
                     <svg className="w-4 h-4 fill-current text-stone-900" viewBox="0 0 24 24">
@@ -169,34 +223,54 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
           </div>
         )}
 
-        {/* Step 2: PDP Law & Privacy Consent */}
+        {/* STEP 2: Travel Persona Archetype (NEW) */}
         {step === 2 && (
-          <div className="flex-1 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col justify-between relative z-10">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 shadow-2xs">
-                <ShieldCheck className="w-6 h-6" />
+              <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mb-2.5 shadow-2xs">
+                <Compass className="w-5 h-5" />
               </div>
               <h2 className="text-xl font-extrabold text-stone-900 font-outfit tracking-tight">
-                Data Privacy & Consent
+                Select Your Travel Passion
               </h2>
               <p className="text-xs text-stone-500 mt-1 leading-relaxed">
-                Adhering to Indonesia’s Personal Data Protection (PDP Law). Your telemetry and
-                explorer data are anonymized and never shared with unverified parties.
+                Choose your primary explorer persona to tailor curated wayfinding and merchant recommendations.
               </p>
 
-              <div className="mt-4 p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80 text-[11px] text-stone-600 space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>Anonymized demographic wayfinding</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>Zero PII exposure to AI models</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>Encrypted digital passport vault storage</span>
-                </div>
+              {/* 2x2 Grid of Archetypes */}
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                {ARCHETYPES.map((arch) => {
+                  const isSelected = selectedArchetype === arch.id;
+                  return (
+                    <button
+                      key={arch.id}
+                      type="button"
+                      onClick={() => setSelectedArchetype(arch.id)}
+                      className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between min-h-[96px] ${
+                        isSelected
+                          ? 'border-[#d85d5d] bg-[#fff1f1]/50 ring-2 ring-[#d85d5d]/20 shadow-xs'
+                          : 'border-stone-200/80 bg-stone-50/50 hover:bg-stone-50 hover:border-stone-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-2xl">{arch.icon}</span>
+                        {isSelected && (
+                          <span className="w-4 h-4 rounded-full bg-[#d85d5d] text-white flex items-center justify-center text-[10px]">
+                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <span className="text-[11px] font-extrabold font-outfit text-stone-900 block leading-tight">
+                          {arch.title}
+                        </span>
+                        <span className="text-[9px] text-stone-500 font-sans block line-clamp-2 mt-0.5 leading-snug">
+                          {arch.desc}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -204,111 +278,78 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className="w-full py-3.5 rounded-2xl bg-[#d85d5d] text-white font-outfit font-bold text-xs hover:bg-[#c64f4f] transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                className="w-full py-3.5 rounded-2xl bg-[#d85d5d] text-white font-outfit font-bold text-xs hover:bg-[#c64f4f] transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center justify-center gap-2"
               >
-                I Agree & Continue
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="w-full py-2 text-center text-xs text-stone-400 hover:text-stone-600 font-medium cursor-pointer"
-              >
-                ← Back to Sign In
+                <span>Continue to Privacy Consent</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Demographics Setup */}
+        {/* STEP 3: PDP Law & Profile Demographics */}
         {step === 3 && (
-          <div className="flex-1 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col justify-between relative z-10">
             <div>
+              <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2.5 shadow-2xs">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
               <h2 className="text-xl font-extrabold text-stone-900 font-outfit tracking-tight">
-                Explorer Profile
+                Data Privacy & Profile
               </h2>
-              <p className="text-xs text-stone-500 mt-0.5">
-                Tailors concierge wayfinding & cultural perks to you.
+              <p className="text-xs text-stone-500 mt-1 leading-relaxed">
+                Adhering to Indonesia’s Personal Data Protection (PDP Law). Your telemetry is anonymized and stored locally.
               </p>
 
-              <div className="mt-3.5 space-y-2.5">
+              <div className="mt-3.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 text-[11px] text-stone-600 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>Anonymized demographic wayfinding</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>Encrypted digital passport vault storage</span>
+                </div>
+              </div>
+
+              {/* Quick Profile Confirmation */}
+              <div className="mt-3 space-y-2">
                 <div>
-                  <label className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block font-mono">
-                    Full Name
+                  <label className="text-[9px] font-bold text-stone-400 uppercase tracking-wider block font-mono">
+                    Explorer Name
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Astrid Widayani"
-                    className="w-full mt-1 p-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 font-medium focus:outline-hidden focus:border-[#d85d5d] focus:ring-2 focus:ring-[#d85d5d]/15"
+                    className="w-full mt-0.5 p-2 rounded-xl border border-stone-200 text-xs text-stone-900 font-medium focus:outline-hidden focus:border-[#d85d5d]"
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block font-mono">
+                    <label className="text-[9px] font-bold text-stone-400 uppercase tracking-wider block font-mono">
+                      Region
+                    </label>
+                    <input
+                      type="text"
+                      value={region}
+                      onChange={(e) => setRegion(e.target.value)}
+                      className="w-full mt-0.5 p-2 rounded-xl border border-stone-200 text-xs text-stone-900 font-medium focus:outline-hidden focus:border-[#d85d5d]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-bold text-stone-400 uppercase tracking-wider block font-mono">
                       Nationality
                     </label>
                     <select
                       value={nationality}
                       onChange={(e) => setNationality(e.target.value)}
-                      className="w-full mt-1 p-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 font-medium focus:outline-hidden focus:border-[#d85d5d] bg-white cursor-pointer"
+                      className="w-full mt-0.5 p-2 rounded-xl border border-stone-200 text-xs text-stone-900 font-medium bg-white focus:outline-hidden focus:border-[#d85d5d]"
                     >
                       <option>Indonesian (WNI)</option>
                       <option>International (WNA)</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block font-mono">
-                      Age Bracket
-                    </label>
-                    <select
-                      value={age}
-                      onChange={(e) => setAge(e.target.value)}
-                      className="w-full mt-1 p-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 font-medium focus:outline-hidden focus:border-[#d85d5d] bg-white cursor-pointer"
-                    >
-                      <option>18-24</option>
-                      <option>25-34</option>
-                      <option>35-49</option>
-                      <option>50+</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Gender Segmented Radio Control */}
-                <div>
-                  <label className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block font-mono mb-1">
-                    Gender Identity
-                  </label>
-                  <div className="grid grid-cols-3 gap-1.5 p-1 bg-stone-100 rounded-xl">
-                    {['Female', 'Male', 'Other'].map((g) => (
-                      <button
-                        key={g}
-                        type="button"
-                        onClick={() => setGender(g)}
-                        className={`py-1.5 rounded-lg text-[11px] font-outfit font-semibold transition-all cursor-pointer text-center ${
-                          gender === g
-                            ? 'bg-white text-stone-900 shadow-2xs font-extrabold'
-                            : 'text-stone-500 hover:text-stone-800'
-                        }`}
-                      >
-                        {g}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block font-mono">
-                    Home Base Region
-                  </label>
-                  <input
-                    type="text"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                    placeholder="e.g. Surakarta / Jawa Tengah"
-                    className="w-full mt-1 p-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 font-medium focus:outline-hidden focus:border-[#d85d5d] focus:ring-2 focus:ring-[#d85d5d]/15"
-                  />
                 </div>
               </div>
             </div>
@@ -316,18 +357,70 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
             <div className="space-y-2 mt-4">
               <button
                 type="button"
-                onClick={handleFinish}
-                className="w-full py-3.5 rounded-2xl bg-[#d85d5d] text-white font-outfit font-bold text-xs hover:bg-[#c64f4f] transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                onClick={() => setStep(4)}
+                className="w-full py-3.5 rounded-2xl bg-[#d85d5d] text-white font-outfit font-bold text-xs hover:bg-[#c64f4f] transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center justify-center gap-2"
               >
-                Enter Oslo Cityscape →
+                <span>Agree & Activate Passport</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 4: Celebration & Welcome Bonus (NEW) */}
+        {step === 4 && (
+          <div className="flex-1 flex flex-col justify-between text-center relative z-10">
+            <div className="py-2">
+              {/* Celebration Emblem */}
+              <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-[#fff1f1] to-amber-50 border border-amber-200/80 text-amber-600 flex items-center justify-center mx-auto mb-3 shadow-sm animate-bounce">
+                <Award className="w-7 h-7 text-amber-500" />
+              </div>
+
+              <h2 className="text-2xl font-extrabold text-stone-900 font-outfit tracking-tight">
+                Passport Activated!
+              </h2>
+
+              <p className="text-xs text-stone-500 mt-1 max-w-[260px] mx-auto leading-relaxed">
+                Welcome to Nusantara. Your personal travel passport is ready for exploration.
+              </p>
+
+              {/* Reward Grant Box */}
+              <div className="my-4 p-4 rounded-2xl bg-gradient-to-br from-[#fff1f1] via-white to-amber-50/60 border border-[#fecaca] shadow-xs space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 font-mono font-bold text-xs">
+                  <span>🏅 +500 PTS Welcome Grant</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 pt-1">
+                  <span className="text-xl">{selectedArchetypeData.icon}</span>
+                  <div className="text-left">
+                    <span className="text-[11px] font-mono font-bold text-stone-400 uppercase block leading-none">
+                      Active Archetype
+                    </span>
+                    <span className="text-xs font-extrabold font-outfit text-stone-900">
+                      {selectedArchetypeData.title}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2 mt-2">
               <button
                 type="button"
-                onClick={() => setStep(2)}
-                className="w-full py-1 text-center text-xs text-stone-400 hover:text-stone-600 font-medium cursor-pointer"
+                onClick={() => handleFinish(false)}
+                className="w-full py-3.5 rounded-2xl bg-[#d85d5d] text-white font-outfit font-bold text-xs hover:bg-[#c64f4f] transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
               >
-                ← Back to Consent
+                Start Exploring Oslo →
               </button>
+
+              {onLaunchTour && (
+                <button
+                  type="button"
+                  onClick={() => handleFinish(true)}
+                  className="w-full py-2 text-xs font-semibold text-stone-500 hover:text-stone-800 transition-colors cursor-pointer"
+                >
+                  Take a 30-Second Feature Tour →
+                </button>
+              )}
             </div>
           </div>
         )}

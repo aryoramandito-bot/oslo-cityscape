@@ -157,3 +157,4 @@ export interface PassportLoyaltyCard {
   endorser: string;
 }
 
+export type TravelArchetype = 'heritage' | 'culinary' | 'photowalker' | 'craft';
