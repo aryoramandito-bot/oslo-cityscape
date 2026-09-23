@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type React from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { useConfetti } from '../../hooks/useConfetti';
@@ -8,7 +8,6 @@ import {
   MapPin,
   Share2,
   Bell,
-  BellRing,
   Navigation,
   ExternalLink,
   Copy,
@@ -19,6 +18,7 @@ import {
   Compass,
   CheckCircle2,
   Sparkles,
+  Image,
 } from 'lucide-react';
 
 export default function EventDetailModal() {
@@ -32,6 +32,24 @@ export default function EventDetailModal() {
   const { triggerCelebration } = useConfetti();
 
   const [copiedCoords, setCopiedCoords] = useState(false);
+  const [isPhotoFaded, setIsPhotoFaded] = useState(false);
+
+  // Smooth entrance transition: greeting photo fades out after 1.4s to reveal full content
+  useEffect(() => {
+    setIsPhotoFaded(false);
+    if (!selectedEvent) return;
+    const timer = setTimeout(() => {
+      setIsPhotoFaded(true);
+    }, 1400);
+    return () => clearTimeout(timer);
+  }, [selectedEvent]);
+
+  const handleContentScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    // If user starts scrolling, immediately fade out photo so content has full viewport
+    if (e.currentTarget.scrollTop > 10 && !isPhotoFaded) {
+      setIsPhotoFaded(true);
+    }
+  };
 
   if (!selectedEvent) return null;
 
@@ -54,6 +72,17 @@ export default function EventDetailModal() {
     setTimeout(() => setCopiedCoords(false), 2000);
   };
 
+  const handleShare = () => {
+    if (!selectedEvent) return;
+    if (navigator.share) {
+      navigator.share({
+        title: selectedEvent.title,
+        text: selectedEvent.description,
+        url: window.location.href,
+      });
+    }
+  };
+
   const handleToggleReminder = () => {
     toggleEventReminder(selectedEvent.id);
     if (!isReminderSet) {
@@ -70,60 +99,108 @@ export default function EventDetailModal() {
     >
       {/* Translucent Liquid Glass Modal Sheet */}
       <div
-        className="w-full max-w-md bg-white/90 backdrop-blur-2xl rounded-t-3xl sm:rounded-3xl shadow-2xl border border-white/80 ring-1 ring-stone-900/5 flex flex-col max-h-[92vh] overflow-hidden animate-in slide-in-from-bottom duration-300"
+        className="w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-t-3xl sm:rounded-3xl shadow-2xl border border-white/80 ring-1 ring-stone-900/5 flex flex-col max-h-[92vh] overflow-hidden animate-in slide-in-from-bottom duration-300 relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Hero Image Banner */}
-        <div className="relative aspect-[16/10] w-full bg-stone-100 overflow-hidden shrink-0">
+        {/* Sticky Header Bar (Adapts smoothly from floating photo scrim to liquid glass bar) */}
+        <div className={`z-20 flex items-center justify-between px-4 py-3 transition-all duration-500 shrink-0 ${
+          isPhotoFaded
+            ? 'bg-white/85 backdrop-blur-xl border-b border-stone-200/70 shadow-2xs'
+            : 'absolute top-0 left-0 right-0 bg-gradient-to-b from-stone-900/70 via-stone-900/30 to-transparent'
+        }`}>
+          {/* Close button */}
+          <button
+            onClick={() => setSelectedEvent(null)}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95 ${
+              isPhotoFaded
+                ? 'bg-stone-100 hover:bg-stone-200 border border-stone-200/80 text-stone-700'
+                : 'bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white'
+            }`}
+            title="Close modal"
+          >
+            <X className="w-4.5 h-4.5" />
+          </button>
+
+          {/* Center Masthead (Smoothly fades in when photo fades out) */}
+          <div className={`flex-1 mx-3 min-w-0 transition-all duration-500 ${
+            isPhotoFaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'
+          }`}>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#d85d5d] block leading-none truncate">
+              {selectedEvent.categoryLabel}
+            </span>
+            <h3 className="text-sm font-extrabold font-outfit text-stone-900 truncate leading-snug">
+              {selectedEvent.title}
+            </h3>
+          </div>
+
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Photo Toggle Button */}
+            <button
+              onClick={() => setIsPhotoFaded(!isPhotoFaded)}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-outfit font-semibold transition-all cursor-pointer shadow-sm active:scale-95 ${
+                isPhotoFaded
+                  ? 'bg-stone-100 hover:bg-stone-200 border border-stone-200/80 text-stone-700'
+                  : 'bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white'
+              }`}
+              title={isPhotoFaded ? "Show photo banner" : "Fade out photo"}
+            >
+              <Image className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-mono">{isPhotoFaded ? 'Photo' : 'Fade'}</span>
+            </button>
+
+            {/* Google Maps Navigate */}
+            {selectedEvent.lat !== undefined && selectedEvent.lng !== undefined && (
+              <button
+                onClick={handleOpenGoogleMapsDirections}
+                title="Navigate via Google Maps"
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95 group ${
+                  isPhotoFaded
+                    ? 'bg-stone-100 hover:bg-stone-200 border border-stone-200/80 text-blue-600'
+                    : 'bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white'
+                }`}
+              >
+                <Navigation className="w-4 h-4 fill-current/20 group-hover:scale-110 transition-transform" />
+              </button>
+            )}
+
+            {/* Native Share */}
+            <button
+              onClick={handleShare}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95 ${
+                isPhotoFaded
+                  ? 'bg-stone-100 hover:bg-stone-200 border border-stone-200/80 text-stone-700'
+                  : 'bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white'
+              }`}
+              title="Share event"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Smooth Collapsible Hero Image Banner */}
+        <div 
+          onClick={() => setIsPhotoFaded(true)}
+          className={`relative w-full bg-stone-100 overflow-hidden shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isPhotoFaded
+              ? 'max-h-0 opacity-0 pointer-events-none'
+              : 'max-h-64 sm:max-h-72 aspect-[16/10] opacity-100 cursor-pointer'
+          }`}
+          title="Tap to fade photo and present full content"
+        >
           <img
             src={selectedEvent.image || 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=1000&q=85'}
             alt={selectedEvent.title}
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover transition-transform duration-1000 ${
+              isPhotoFaded ? 'scale-105' : 'scale-100'
+            }`}
           />
 
           {/* Directional Vignette Scrim */}
           <div className="absolute inset-0 bg-gradient-to-t from-stone-900/85 via-stone-900/30 to-stone-900/40" />
 
-          {/* Liquid Glass Action Controls */}
-          <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-            <button
-              onClick={() => setSelectedEvent(null)}
-              className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95"
-              title="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-2">
-              {selectedEvent.lat !== undefined && selectedEvent.lng !== undefined && (
-                <button
-                  onClick={handleOpenGoogleMapsDirections}
-                  title="Navigate via Google Maps"
-                  className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 group"
-                >
-                  <Navigation className="w-4.5 h-4.5 fill-white/20 group-hover:scale-110 transition-transform" />
-                </button>
-              )}
-
-              <button
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      title: selectedEvent.title,
-                      text: selectedEvent.description,
-                      url: window.location.href,
-                    });
-                  }
-                }}
-                className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 backdrop-blur-xl border border-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95"
-                title="Share event"
-              >
-                <Share2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Bottom Hero Info */}
+          {/* Bottom Hero Info inside Banner */}
           <div className="absolute bottom-4 left-4 right-4 text-white z-10">
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
               <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-white/25 backdrop-blur-xl text-white border border-white/40 shadow-2xs">
@@ -141,21 +218,59 @@ export default function EventDetailModal() {
           </div>
         </div>
 
-        {/* Scrollable Body Content */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4.5 overscroll-contain">
+        {/* Scrollable Body Content: Expands to FULL MODAL HEIGHT when photo fades */}
+        <div 
+          onScroll={handleContentScroll}
+          className="flex-1 overflow-y-auto p-5 space-y-4.5 overscroll-contain"
+        >
+          {/* Full Event Masthead (Presented cleanly when photo is faded) */}
+          {isPhotoFaded && (
+            <div className="pb-3 border-b border-stone-100 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#fff1f1] text-[#d85d5d] border border-[#fecaca]">
+                  {selectedEvent.categoryLabel}
+                </span>
+
+                {selectedEvent.highlightBadge && (
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#fff1f1] text-[#d85d5d] border border-[#fecaca]">
+                    {selectedEvent.highlightBadge}
+                  </span>
+                )}
+              </div>
+
+              <h1 className="text-xl font-extrabold font-outfit text-stone-900 leading-tight">
+                {selectedEvent.title}
+              </h1>
+
+              {selectedEvent.tags && selectedEvent.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {selectedEvent.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-medium bg-stone-100 text-stone-600 border border-stone-200/50"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Quick Schedule & Venue Bar (Liquid Glass Pill) */}
           <div className="p-3.5 rounded-2xl bg-white/70 backdrop-blur-md border border-stone-200/70 shadow-2xs space-y-2">
             <div className="flex items-center justify-between flex-wrap gap-2">
               {/* Time & Duration */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col items-start gap-1">
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#fff1f1] text-[#d85d5d] border border-[#fecaca] font-mono text-[11px] font-bold">
                   <Clock className="w-3.5 h-3.5" />
                   <span>{selectedEvent.time}</span>
                 </div>
                 {selectedEvent.duration && (
-                  <span className="text-[11px] font-mono font-medium text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200/60">
-                    {selectedEvent.duration}
-                  </span>
+                  <div className="flex items-center gap-1 pl-1 text-[10px] font-mono font-semibold text-stone-500">
+                    <Clock className="w-2.5 h-2.5 text-stone-400" />
+                    <span>{selectedEvent.duration}</span>
+                  </div>
                 )}
               </div>
 
