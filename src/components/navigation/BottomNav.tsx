@@ -5,9 +5,9 @@ import { TabType } from '../../types';
 export default function BottomNav() {
   const { activeTab, setActiveTab } = useAppContext();
 
-  // Unified Oslo Brand Signature Palette: Oslo Rose #d85d5d
-  const activeColor = 'text-[#d85d5d]';
-  const activeBg = 'bg-[#fff1f1] text-[#d85d5d]';
+  // Liquid Glass Active Pill with subtle specular rim
+  const activeBg =
+    'bg-[#d85d5d]/12 text-[#d85d5d] border border-[#d85d5d]/25 shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9)] backdrop-blur-md';
 
   const navItems: { id: TabType; label: string; icon: typeof Compass }[] = [
     { id: 'explore', label: 'Explore', icon: Compass },
@@ -17,7 +17,8 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-3 left-4 right-4 max-w-sm mx-auto h-16 rounded-full bg-white/90 backdrop-blur-xl border border-white/80 shadow-[0_12px_36px_rgba(28,25,23,0.08),0_2px_8px_rgba(28,25,23,0.03)] ring-1 ring-stone-900/5 px-2.5 flex items-center justify-between z-30 select-none">
+    /* Transparent Liquid Glass Floating Island */
+    <nav className="fixed bottom-3 left-4 right-4 max-w-sm mx-auto h-16 rounded-full bg-white/45 backdrop-blur-2xl backdrop-saturate-200 border border-white/65 shadow-[0_16px_40px_rgba(28,25,23,0.1),inset_0_1.5px_1.5px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(255,255,255,0.35)] ring-1 ring-stone-900/5 px-2 flex items-center justify-between z-30 select-none">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
@@ -26,8 +27,8 @@ export default function BottomNav() {
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
-            className={`flex-1 h-12 rounded-full flex flex-col items-center justify-center relative cursor-pointer transition-all duration-300 ${
-              isActive ? activeBg : 'text-stone-400 hover:text-stone-700'
+            className={`flex-1 h-12 rounded-full flex flex-col items-center justify-center relative cursor-pointer transition-all duration-300 active:scale-95 ${
+              isActive ? activeBg : 'text-stone-500 hover:text-stone-800'
             }`}
           >
             <Icon
@@ -36,7 +37,7 @@ export default function BottomNav() {
             />
             <span
               className={`text-[10px] font-outfit mt-0.5 tracking-tight ${
-                isActive ? 'font-extrabold text-[#d85d5d]' : 'font-semibold text-stone-400'
+                isActive ? 'font-extrabold text-[#d85d5d]' : 'font-semibold text-stone-500'
               }`}
             >
               {item.label}

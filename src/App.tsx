@@ -40,15 +40,15 @@ function MainLayout() {
       {/* Floating Animated Celebration Toast */}
       <PointsToast />
 
-      {/* Persistent Header */}
+      {/* Persistent Sticky Header */}
       <Header />
 
-      {/* Main Tab View Area with generous clearance above floating BottomNav */}
-      <main className="flex-1 px-4 pt-3 pb-28 overflow-y-auto overscroll-contain">
+      {/* Main Tab Content with generous bottom clearance above floating toolbar */}
+      <main className="flex-1 px-4 pt-3 pb-28">
         {renderActiveTab()}
       </main>
 
-      {/* Floating 2026 Island Bottom Navigation */}
+      {/* Floating Transparent Liquid Glass Bottom Navigation */}
       <BottomNav />
 
       {/* Modals & Overlays */}
