@@ -10,10 +10,15 @@ import {
   Mail,
   User,
   Clock,
+  Compass,
 } from 'lucide-react';
 import { useSession, TimeoutPreset } from '../../hooks/useSessionManager';
 
-export default function AccountSwitcherModal() {
+interface AccountSwitcherModalProps {
+  onReplayTour?: () => void;
+}
+
+export default function AccountSwitcherModal({ onReplayTour }: AccountSwitcherModalProps) {
   const {
     isAccountSwitcherOpen,
     setIsAccountSwitcherOpen,
@@ -242,8 +247,9 @@ export default function AccountSwitcherModal() {
             <span>Sign In to Another Account</span>
           </button>
 
-          <div className="flex items-center justify-center pt-0.5">
+          <div className="flex flex-col items-center justify-center gap-2 pt-0.5">
             <button
+              type="button"
               onClick={() => {
                 loginAsGuest();
                 handleClose();
@@ -252,6 +258,20 @@ export default function AccountSwitcherModal() {
             >
               Continue in Guest Mode →
             </button>
+
+            {onReplayTour && (
+              <button
+                type="button"
+                onClick={() => {
+                  handleClose();
+                  onReplayTour();
+                }}
+                className="text-xs text-[#d85d5d] hover:text-[#c64f4f] font-semibold cursor-pointer flex items-center gap-1.5 pt-1 border-t border-stone-100/80 w-full justify-center"
+              >
+                <Compass className="w-3.5 h-3.5 text-[#d85d5d]" />
+                <span>Replay Feature Tour</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

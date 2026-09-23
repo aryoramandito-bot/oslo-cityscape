@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AppProvider, useAppContext } from './context/AppContext';
 import Header from './components/common/Header';
 import BottomNav from './components/navigation/BottomNav';
@@ -20,10 +21,12 @@ import PointsToast from './components/common/PointsToast';
 import { SessionProvider, useSession } from './hooks/useSessionManager';
 import SessionWarningModal from './components/modals/SessionWarningModal';
 import SessionLockModal from './components/modals/SessionLockModal';
+import SpotlightTour from './components/common/SpotlightTour';
 
 function MainLayout() {
   const { activeTab, isLoginModalOpen, setIsLoginModalOpen, isLoginPageOpen, setIsLoginPageOpen, logout } = useAppContext();
   const { sessionState, warningCountdown, sessionStartedAt, extendSession, lockNow, unlock } = useSession();
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -65,13 +68,22 @@ function MainLayout() {
       <LandmarkDetailModal />
       <EventDetailModal />
       <SiteStatementModal />
-      <AccountSwitcherModal />
+      <AccountSwitcherModal onReplayTour={() => setIsTourOpen(true)} />
       {isLoginPageOpen && (
         <LoginPage onClose={() => setIsLoginPageOpen(false)} />
       )}
       {isLoginModalOpen && (
-        <OnboardingModal onComplete={() => setIsLoginModalOpen(false)} />
+        <OnboardingModal
+          onComplete={() => setIsLoginModalOpen(false)}
+          onLaunchTour={() => setIsTourOpen(true)}
+        />
       )}
+
+      {/* SaaS Contextual Spotlight Feature Tour */}
+      <SpotlightTour
+        isOpen={isTourOpen}
+        onComplete={() => setIsTourOpen(false)}
+      />
 
       {/* SaaS Inactivity Warning Modal */}
       {sessionState === 'warning' && (
