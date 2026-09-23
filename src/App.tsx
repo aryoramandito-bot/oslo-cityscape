@@ -10,6 +10,7 @@ import CitySwitcherModal from './components/modals/CitySwitcherModal';
 import CityIntroModal from './components/modals/CityIntroModal';
 import RadarMapModal from './components/modals/RadarMapModal';
 import LandmarkDetailModal from './components/modals/LandmarkDetailModal';
+import EventDetailModal from './components/modals/EventDetailModal';
 import SiteStatementModal from './components/modals/SiteStatementModal';
 import OnboardingModal from './components/modals/OnboardingModal';
 import LogoutModal from './components/modals/LogoutModal';
@@ -56,6 +57,7 @@ function MainLayout() {
       <CityIntroModal />
       <RadarMapModal />
       <LandmarkDetailModal />
+      <EventDetailModal />
       <SiteStatementModal />
       <LogoutModal />
       {isLoginModalOpen && (

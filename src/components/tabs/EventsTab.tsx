@@ -1,34 +1,12 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { mockEvents, EVENT_CATEGORY_TABS } from '../../data/events';
 import { EventCategory } from '../../types';
-import { Calendar, MapPin, Bell, BellRing, Sparkles } from 'lucide-react';
+import { Calendar, MapPin, Bell, BellRing, Sparkles, Clock, ChevronRight } from 'lucide-react';
 
 export default function EventsTab() {
-  const { activeCity } = useAppContext();
+  const { activeCity, setSelectedEvent, eventReminders, toggleEventReminder } = useAppContext();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  
-  // Persistent reminders state
-  const [reminders, setReminders] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('oslo_event_reminders');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const toggleReminder = (id: string) => {
-    setReminders((prev) => {
-      const next = prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id];
-      try {
-        localStorage.setItem('oslo_event_reminders', JSON.stringify(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
-  };
 
   const cityEvents = useMemo(() => {
     return mockEvents.filter((e) => e.cityId === activeCity);
@@ -151,38 +129,42 @@ export default function EventsTab() {
           </div>
         ) : (
           filteredEvents.map((event) => {
-            const hasReminder = reminders.includes(event.id);
+            const hasReminder = eventReminders.includes(event.id);
             const theme = getCategoryTheme(event.category);
 
             return (
-              /* Double-Bezel Card in Oslo Warm Linen & Rose Palette */
+              /* Double-Bezel Card in Oslo Warm Linen & Rose Palette with Rich Click-to-Detail Interaction */
               <div
                 key={event.id}
-                className="group relative rounded-[28px] p-1.5 bg-gradient-to-b from-stone-900/[0.04] via-stone-900/[0.015] to-stone-900/[0.04] ring-1 ring-stone-900/[0.05] shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)] hover:shadow-[0_12px_32px_-6px_rgba(28,25,23,0.07)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+                onClick={() => setSelectedEvent(event)}
+                className="group relative rounded-[28px] p-1.5 bg-gradient-to-b from-stone-900/[0.04] via-stone-900/[0.015] to-stone-900/[0.04] ring-1 ring-stone-900/[0.05] shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)] hover:shadow-[0_12px_32px_-6px_rgba(216,93,93,0.14)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 cursor-pointer"
+                title="Tap to view full itinerary and location details"
               >
                 <div className="relative rounded-[calc(28px-0.375rem)] bg-white p-5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] overflow-hidden flex flex-col gap-3.5">
                   
                   {/* Subtle Category Ambient Radial Glow */}
                   <div className={`absolute -top-16 -right-16 w-36 h-36 ${theme.bgGlow} rounded-full blur-3xl pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
 
-                  {/* 1. TOP ANCHORAGE: TIME & VENUE STRIP */}
-                  <div className="flex items-center justify-between gap-2 pb-3 border-b border-stone-100 relative z-10">
-                    {/* Time Pill in Oslo Rose & Duration */}
-                    <div className="flex items-center gap-2 min-w-0">
+                  {/* 1. TOP ANCHORAGE: TIME (WITH DURATION MOVED VERTICALLY BELOW) & VENUE STRIP */}
+                  <div className="flex items-start justify-between gap-2 pb-3 border-b border-stone-100 relative z-10">
+                    {/* Time Pill in Oslo Rose with Duration Displayed Vertically Below */}
+                    <div className="flex flex-col items-start gap-1 min-w-0">
                       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#fff1f1] text-[#d85d5d] border border-[#fecaca] font-mono text-[11px] font-bold tracking-tight shadow-2xs shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#d85d5d] animate-pulse shrink-0" />
                         <span className="whitespace-nowrap">{event.time}</span>
                       </div>
 
+                      {/* Duration cleanly positioned directly below time without any horizontal truncation */}
                       {event.duration && (
-                        <span className="text-[10px] font-mono text-stone-500 font-semibold tracking-wide truncate max-w-[120px]">
-                          {event.duration}
-                        </span>
+                        <div className="flex items-center gap-1 pl-1 text-[10px] font-mono text-stone-500 font-semibold tracking-wide">
+                          <Clock className="w-2.5 h-2.5 text-stone-400 shrink-0" />
+                          <span>{event.duration}</span>
+                        </div>
                       )}
                     </div>
 
                     {/* Venue Chip */}
-                    <div className="flex items-center gap-1 text-[11px] font-medium text-stone-600 bg-stone-50 px-2.5 py-1 rounded-full border border-stone-200/60 shrink-0 max-w-[170px] truncate">
+                    <div className="flex items-center gap-1 text-[11px] font-medium text-stone-600 bg-stone-50 px-2.5 py-1 rounded-full border border-stone-200/60 shrink-0 max-w-[170px] truncate mt-0.5">
                       <MapPin className="w-3 h-3 text-[#d85d5d] shrink-0" />
                       <span className="truncate">{event.location}</span>
                     </div>
@@ -215,8 +197,9 @@ export default function EventsTab() {
                       </div>
 
                       {/* Event Title */}
-                      <h3 className="text-sm font-extrabold text-stone-900 font-outfit tracking-tight leading-snug group-hover:text-[#d85d5d] transition-colors">
-                        {event.title}
+                      <h3 className="text-sm font-extrabold text-stone-900 font-outfit tracking-tight leading-snug group-hover:text-[#d85d5d] transition-colors flex items-center gap-1">
+                        <span>{event.title}</span>
+                        <ChevronRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#d85d5d] shrink-0" />
                       </h3>
                     </div>
                   </div>
@@ -233,10 +216,13 @@ export default function EventsTab() {
                       <span className="uppercase tracking-wider">Verified Schedule</span>
                     </div>
 
-                    {/* Button-in-Button Trailing Icon Architecture */}
+                    {/* Button-in-Button Trailing Icon Architecture (stops propagation so user can toggle reminder without opening modal) */}
                     <button
                       type="button"
-                      onClick={() => toggleReminder(event.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleEventReminder(event.id);
+                      }}
                       className={`group/btn flex items-center gap-2 pl-3.5 pr-1.5 py-1 rounded-full text-xs font-outfit font-semibold transition-all duration-300 shadow-2xs active:scale-[0.97] cursor-pointer ${
                         hasReminder
                           ? 'bg-[#d85d5d] text-white shadow-xs'

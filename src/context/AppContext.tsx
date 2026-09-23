@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useOptimistic, useTransition } from 'react';
-import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption } from '../types';
+import { Landmark, Review, CityId, TabType, UserProfile, LedgerEntry, SortOption, EventItem } from '../types';
 import { mockLandmarks } from '../data/jakarta';
 import { mockBandungLandmarks } from '../data/bandung';
 import { mockSoloLandmarks } from '../data/solo';
@@ -25,6 +25,11 @@ interface AppContextType {
   addReview: (landmarkId: string, rating: number, comment: string) => void;
   selectedLandmark: Landmark | null;
   setSelectedLandmark: (landmark: Landmark | null) => void;
+  selectedEvent: EventItem | null;
+  setSelectedEvent: (event: EventItem | null) => void;
+  eventReminders: string[];
+  toggleEventReminder: (id: string) => void;
+  getEventDistance: (event: EventItem) => string | null;
   isCitySwitcherOpen: boolean;
   setIsCitySwitcherOpen: (open: boolean) => void;
   isRadarMapOpen: boolean;
@@ -129,6 +134,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // Landing page defaults to explore
   const [activeTab, setActiveTab] = useState<TabType>('explore');
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [eventReminders, setEventReminders] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('oslo_event_reminders');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleEventReminder = (id: string) => {
+    setEventReminders((prev) => {
+      const next = prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id];
+      try {
+        localStorage.setItem('oslo_event_reminders', JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
   const [isCitySwitcherOpen, setIsCitySwitcherOpen] = useState(false);
   const [isRadarMapOpen, setIsRadarMapOpen] = useState(false);
   const [activeIntroCity, setActiveIntroCity] = useState<CityId | null>(null);
@@ -249,6 +275,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const getLandmarkDistance = (lm: Landmark): string | null => {
     if (!userLocation) return null;
     const meters = getDistanceInMeters(userLocation.lat, userLocation.lng, lm.lat, lm.lng);
+    return formatDistance(meters);
+  };
+
+  const getEventDistance = (event: EventItem): string | null => {
+    if (!userLocation || !event.lat || !event.lng) return null;
+    const meters = getDistanceInMeters(userLocation.lat, userLocation.lng, event.lat, event.lng);
     return formatDistance(meters);
   };
 
@@ -395,6 +427,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         addReview,
         selectedLandmark,
         setSelectedLandmark,
+        selectedEvent,
+        setSelectedEvent,
+        eventReminders,
+        toggleEventReminder,
+        getEventDistance,
         isCitySwitcherOpen,
         setIsCitySwitcherOpen,
         isRadarMapOpen,

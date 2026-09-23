@@ -50,6 +50,15 @@ export interface EventItem {
   cityId: CityId;
   duration?: string;
   highlightBadge?: string;
+  image?: string;
+  host?: string;
+  admission?: string;
+  itinerary?: string[];
+  fullDetails?: string;
+  meetingPoint?: string;
+  lat?: number;
+  lng?: number;
+  tags?: string[];
 }
 
 export interface PerkItem {
