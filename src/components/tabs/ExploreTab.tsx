@@ -59,8 +59,8 @@ export default function ExploreTab() {
 
   return (
     <div className="flex flex-col gap-4 pb-20 pt-1">
-      {/* Top Header Segmented Controls & Title */}
-      <div className="flex flex-col gap-3 bg-white p-4.5 rounded-3xl border border-stone-200/80 shadow-2xs">
+      {/* Top Header Card: Translucent Liquid Glass */}
+      <div className="flex flex-col gap-3.5 bg-white/70 backdrop-blur-2xl p-5 rounded-3xl border border-white/80 shadow-[0_8px_32px_rgba(28,25,23,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] ring-1 ring-stone-900/5">
         <div className="flex items-center justify-between">
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-[0.14em] block text-[#d85d5d]">
@@ -71,18 +71,18 @@ export default function ExploreTab() {
             </h1>
           </div>
 
-          {/* Quick Radar Action */}
+          {/* Quick Radar Action: Liquid Glass Pill (NO PITCH BLACK) */}
           <button
             onClick={() => setIsRadarMapOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-stone-900 text-white font-outfit font-bold text-xs shadow-2xs hover:bg-stone-800 transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95"
+            className="px-3.5 py-2 rounded-xl bg-white/90 hover:bg-white text-stone-800 font-outfit font-bold text-xs border border-stone-200/80 shadow-[0_4px_16px_rgba(28,25,23,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-xl transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95"
           >
-            <Compass className="w-3.5 h-3.5 text-[#ff9898]" />
-            Radar Map
+            <Compass className="w-4 h-4 text-[#d85d5d]" />
+            <span>Radar Map</span>
           </button>
         </div>
 
-        {/* Segmented Category Filter in Header Section */}
-        <div className="bg-stone-100/90 p-1 rounded-2xl border border-stone-200/60 flex items-center justify-between gap-1 text-[11px] font-bold font-outfit select-none">
+        {/* Liquid Glass Segmented Category Rail */}
+        <div className="bg-stone-200/50 backdrop-blur-md p-1 rounded-2xl border border-white/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] flex items-center justify-between gap-1 text-[11px] font-bold font-outfit select-none">
           <button
             onClick={() => setCategoryFilter('all')}
             className={`flex-1 py-1.5 rounded-xl transition-all cursor-pointer text-center ${
@@ -116,7 +116,7 @@ export default function ExploreTab() {
         </div>
       </div>
 
-      {/* Search Input & Sort Selector Row */}
+      {/* Search Input & Sort Selector Row with Liquid Glass */}
       <div className="flex items-center gap-2">
         {/* Search Bar */}
         <div className="relative flex-1">
@@ -132,7 +132,7 @@ export default function ExploreTab() {
                 ? 'attractions'
                 : 'culinary'
             }...`}
-            className="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-white border border-stone-200/90 text-xs text-stone-800 placeholder-stone-400 focus:outline-hidden focus:border-[#d85d5d] focus:ring-2 focus:ring-[#d85d5d]/15 transition-all shadow-2xs"
+            className="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-white/75 backdrop-blur-xl border border-stone-200/80 text-xs text-stone-900 placeholder-stone-400 focus:bg-white focus:outline-hidden focus:border-[#d85d5d] focus:ring-2 focus:ring-[#d85d5d]/15 transition-all shadow-[0_2px_12px_rgba(28,25,23,0.03)]"
           />
           {searchQuery && (
             <button
@@ -149,7 +149,7 @@ export default function ExploreTab() {
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value as SortOption)}
-            className="appearance-none pl-3 pr-8 py-2.5 rounded-2xl bg-white border border-stone-200/90 text-xs font-semibold text-stone-700 font-outfit focus:outline-hidden focus:border-[#d85d5d] shadow-2xs cursor-pointer"
+            className="appearance-none pl-3 pr-8 py-2.5 rounded-2xl bg-white/75 backdrop-blur-xl border border-stone-200/80 text-xs font-semibold text-stone-700 font-outfit focus:bg-white focus:outline-hidden focus:border-[#d85d5d] shadow-[0_2px_12px_rgba(28,25,23,0.03)] cursor-pointer"
           >
             <option value="default">Default</option>
             <option value="rating">Rating</option>
@@ -164,7 +164,7 @@ export default function ExploreTab() {
         <span>
           Showing <strong className="text-stone-800 font-bold tabular-nums">{sortedLandmarks.length}</strong> curated sites
         </span>
-        <span className="text-[10px] font-mono bg-white px-2 py-0.5 rounded-md border border-stone-200/80 text-stone-600">
+        <span className="text-[10px] font-mono bg-white/80 backdrop-blur-md px-2 py-0.5 rounded-md border border-stone-200/80 text-stone-600">
           <span className="text-emerald-600 font-bold tabular-nums">{visitedCount}</span>/{landmarks.length} Visited
         </span>
       </div>
@@ -177,7 +177,7 @@ export default function ExploreTab() {
           ))}
         </div>
       ) : (
-        <div className="p-8 text-center bg-white rounded-3xl border border-stone-200/80 shadow-2xs">
+        <div className="p-8 text-center bg-white/80 backdrop-blur-xl rounded-3xl border border-stone-200/80 shadow-2xs">
           <p className="text-xs font-bold text-stone-700 font-outfit">No sites match your search</p>
           <p className="text-[11px] text-stone-400 mt-1">Try another keyword or reset the category filter.</p>
           <button
