@@ -1,8 +1,24 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import L from 'leaflet';
 import { Landmark } from '../../types';
-import { Coordinates, CITY_CENTERS, getDistanceInMeters, formatDistance } from '../../utils/geo';
-import { MapPin, CheckCircle2, Utensils, Landmark as LandmarkIcon, LocateFixed, Plus, Minus } from 'lucide-react';
+import { Coordinates, CITY_CENTERS } from '../../utils/geo';
+import { Utensils, Landmark as LandmarkIcon, LocateFixed, Plus, Minus, Layers } from 'lucide-react';
+
+export const GOOGLE_MAPS_API_KEY =
+  (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_GOOGLE_MAPS_API_KEY || '';
+
+export function buildGoogleTileUrl(layerStyle: 'm' | 'p' | 'y' | 's', s = '{s}', x = '{x}', y = '{y}', z = '{z}'): string {
+  const keyParam = GOOGLE_MAPS_API_KEY ? `&key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}` : '';
+  return `https://mt${s}.google.com/vt/lyrs=${layerStyle}&x=${x}&y=${y}&z=${z}&hl=en${keyParam}`;
+}
+
+type GoogleMapStyle = 'm' | 'p' | 'y';
+
+const MAP_STYLE_LABELS: Record<GoogleMapStyle, string> = {
+  m: 'Road',
+  p: 'Terrain',
+  y: 'Satellite',
+};
 
 interface RealMapProps {
   landmarks: Landmark[];
@@ -25,10 +41,12 @@ export default function RealMap({
 }: RealMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const userMarkerRef = useRef<L.LayerGroup | null>(null);
 
   const [mapCategory, setMapCategory] = useState<'all' | 'attraction' | 'culinary'>('all');
+  const [mapStyle, setMapStyle] = useState<GoogleMapStyle>('m');
 
   // Filter landmarks based on on-map category toggle
   const filteredLandmarks = useMemo(() => {
@@ -45,31 +63,30 @@ export default function RealMap({
     return [center.lat, center.lng] as [number, number];
   }, [activeCity, targetLandmark]);
 
-  // 1. Initialize Leaflet Map Instance
+  // 1. Initialize Leaflet Map Instance with Google Maps Tiles
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // Guard against multiple initializations
     if (!mapInstanceRef.current) {
       const map = L.map(mapContainerRef.current, {
         center: initialCenter,
-        zoom: targetLandmark ? 15 : (activeCity === 'laweyan' ? 15 : 13),
+        zoom: targetLandmark ? 15 : activeCity === 'laweyan' ? 15 : 13,
         zoomControl: false,
         attributionControl: true,
       });
 
-      // CartoDB Voyager clean tile layer
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19,
+      const googleTileUrl = buildGoogleTileUrl(mapStyle);
+
+      const tileLayer = L.tileLayer(googleTileUrl, {
+        attribution: '&copy; Google Maps',
+        subdomains: ['0', '1', '2', '3'],
+        maxZoom: 20,
       }).addTo(map);
 
-      // Layer groups for markers
       const markersLayer = L.layerGroup().addTo(map);
       const userLayer = L.layerGroup().addTo(map);
 
+      tileLayerRef.current = tileLayer;
       markersLayerRef.current = markersLayer;
       userMarkerRef.current = userLayer;
       mapInstanceRef.current = map;
@@ -79,9 +96,17 @@ export default function RealMap({
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
+        tileLayerRef.current = null;
       }
     };
   }, []);
+
+  // 1b. Update Google Maps Tile Layer style when toggled (Road / Terrain / Satellite)
+  useEffect(() => {
+    if (!tileLayerRef.current) return;
+    const nextUrl = buildGoogleTileUrl(mapStyle);
+    tileLayerRef.current.setUrl(nextUrl);
+  }, [mapStyle]);
 
   // 2. Handle City Change / Center Updates
   useEffect(() => {
@@ -115,7 +140,7 @@ export default function RealMap({
         ? 'bg-emerald-500 text-white'
         : isCulinary
         ? 'bg-amber-500 text-white'
-        : 'bg-[#ff9898] text-white';
+        : 'bg-[#d85d5d] text-white';
 
       const ringStyle = isSelected
         ? 'ring-4 ring-white scale-125 z-50 shadow-2xl'
@@ -134,7 +159,7 @@ export default function RealMap({
           </div>
           ${
             isSelected
-              ? '<div class="absolute -bottom-1 w-2 h-2 bg-gray-900 rotate-45"></div>'
+              ? '<div class="absolute -bottom-1 w-2 h-2 bg-stone-900 rotate-45"></div>'
               : ''
           }
         </div>
@@ -221,20 +246,24 @@ export default function RealMap({
     mapInstanceRef.current?.zoomOut();
   };
 
+  const cycleMapStyle = () => {
+    setMapStyle((prev) => (prev === 'm' ? 'p' : prev === 'p' ? 'y' : 'm'));
+  };
+
   return (
     <div className="relative w-full h-full overflow-hidden select-none">
       {/* Real Map Canvas */}
       <div ref={mapContainerRef} className="w-full h-full z-10" />
 
       {/* Floating Filter Pills on Top of Map */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-center">
-        <div className="bg-white/90 backdrop-blur-md px-1.5 py-1 rounded-2xl shadow-lg border border-gray-200/80 flex items-center gap-1 text-[11px] font-bold font-outfit">
+      <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-center pointer-events-none">
+        <div className="bg-white/90 backdrop-blur-md px-1.5 py-1 rounded-2xl shadow-lg border border-stone-200/80 flex items-center gap-1 text-[11px] font-bold font-outfit pointer-events-auto">
           <button
             onClick={() => setMapCategory('all')}
             className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
               mapCategory === 'all'
-                ? 'bg-gray-900 text-white shadow-xs'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-500 hover:text-stone-900'
             }`}
           >
             All ({landmarks.length})
@@ -243,8 +272,8 @@ export default function RealMap({
             onClick={() => setMapCategory('attraction')}
             className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1 ${
               mapCategory === 'attraction'
-                ? 'bg-[#ff9898] text-white shadow-xs'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-[#d85d5d] text-white shadow-xs'
+                : 'text-stone-500 hover:text-stone-900'
             }`}
           >
             <LandmarkIcon className="w-3 h-3" />
@@ -255,7 +284,7 @@ export default function RealMap({
             className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1 ${
               mapCategory === 'culinary'
                 ? 'bg-amber-500 text-white shadow-xs'
-                : 'text-gray-500 hover:text-gray-900'
+                : 'text-stone-500 hover:text-stone-900'
             }`}
           >
             <Utensils className="w-3 h-3" />
@@ -264,27 +293,36 @@ export default function RealMap({
         </div>
       </div>
 
-      {/* Floating Zoom & GPS Controls */}
-      <div className="absolute bottom-24 right-4 z-20 flex flex-col gap-2">
+      {/* Floating Layer Switcher, Zoom & GPS Controls */}
+      <div className="absolute bottom-24 right-4 z-20 flex flex-col items-end gap-2">
+        <button
+          onClick={cycleMapStyle}
+          className="px-2.5 h-9 rounded-2xl bg-white/95 backdrop-blur-md shadow-lg border border-stone-200/80 flex items-center gap-1.5 text-[10px] font-mono font-bold text-stone-700 hover:text-[#d85d5d] hover:bg-stone-50 transition-all cursor-pointer"
+          title="Switch Google Maps Layer"
+        >
+          <Layers className="w-3.5 h-3.5 text-[#d85d5d]" />
+          <span>{MAP_STYLE_LABELS[mapStyle]}</span>
+        </button>
+
         <button
           onClick={handleRecenter}
-          className="w-10 h-10 rounded-2xl bg-white shadow-lg border border-gray-200/80 flex items-center justify-center text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all cursor-pointer"
+          className="w-10 h-10 rounded-2xl bg-white shadow-lg border border-stone-200/80 flex items-center justify-center text-stone-700 hover:text-blue-600 hover:bg-stone-50 transition-all cursor-pointer"
           title="Recenter Location"
         >
           <LocateFixed className="w-5 h-5 text-blue-500" />
         </button>
 
-        <div className="flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200/80 overflow-hidden">
+        <div className="flex flex-col bg-white rounded-2xl shadow-lg border border-stone-200/80 overflow-hidden">
           <button
             onClick={handleZoomIn}
-            className="w-10 h-9 flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all cursor-pointer border-b border-gray-100"
+            className="w-10 h-9 flex items-center justify-center text-stone-700 hover:bg-stone-50 transition-all cursor-pointer border-b border-stone-100"
             title="Zoom In"
           >
             <Plus className="w-4 h-4" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="w-10 h-9 flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all cursor-pointer"
+            className="w-10 h-9 flex items-center justify-center text-stone-700 hover:bg-stone-50 transition-all cursor-pointer"
             title="Zoom Out"
           >
             <Minus className="w-4 h-4" />
